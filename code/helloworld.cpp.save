@@ -1,0 +1,15 @@
+#include <iostream>
+
+using namespace std;
+
+const char a [] = "Hello";
+const char b [] = "World";
+
+int main()
+{
+
+//	cout << "Hello world!!" << endl	cout << a<< b<< endl;
+
+
+return 0;
+}
