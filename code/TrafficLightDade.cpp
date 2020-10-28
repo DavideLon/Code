@@ -15,7 +15,9 @@ const int led_red=1;
 const int led_green=2;
 const int led_yellow=3;
 
-const int timeoutMS = 1000;
+const int timeoutRedMS = 1000;
+const int timeoutYellowMS = 500;
+const int timeoutGreenMS = 1000;
 
 //
 // UTILS
@@ -40,6 +42,14 @@ void setLed(int whichLed, bool value)
 	digitalWrite(whichLed, value);
 }
 
+void allOff()
+{
+	for(int i=1; i<=3; i++)
+	{
+		digitalWrite(i, false);
+	}
+}
+
 int main()
 {
 int flag =10;
@@ -52,15 +62,28 @@ int flag =10;
 		{
 			setLed(led_yellow, false);
 			setLed(led_red, true);
-			delay (timeoutMS);
+			delay (timeoutRedMS);
 			setLed(led_red, false);
 			setLed(led_green, true);
-			delay (timeoutMS);
+			delay (timeoutGreenMS);
 			setLed(led_green, false);
 			setLed(led_yellow, true);
-			delay (timeoutMS);
-			flag = flag -1
+			delay (timeoutYellowMS);
+			flag--;
 		}
+	flag=5;
+
+	allOff();
+	int onoff=1;
+
+	while(flag)
+	{
+		setLed(led_yellow,onoff);
+		delay(timeoutYellowMS);
+		onoff=!onoff;
+		flag--;
+	}
+	allOff();
 
 return 0;
 }

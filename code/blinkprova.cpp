@@ -32,13 +32,15 @@ void setLed(int whichLed, bool value)
 int main()
 {
 bool onoff= FALSE;
+int flag=10;
 	init();
 // on inited, now let's light the led and make it blink
-	while(1)
+	while(flag)
 	{
 		setLed(led_blue, onoff);
 		delay (timeoutMS);
 		onoff = !onoff;
+		flag--;
 	}
 
 return 0;
