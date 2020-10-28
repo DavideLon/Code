@@ -6,7 +6,6 @@
  */
 
 #include <iostream>
-#include <wiringPi.h>
 #include <vector>
 #include <limits>
 
@@ -27,9 +26,9 @@ const int timeoutErrorMS = 500;
 const int timeoutOnMS= 2000;
 
 vector <vector <int>> matrice = {{2,1,3,-1},
-								{-1,1,3,-1},
-								{0,-1,-1,-1},
-								{-1,-1,-1,-1}};
+				{-1,1,3,-1},
+				{0,-1,-1,-1},
+				{-1,-1,-1,-1}};
 
 static int state =0;
 static char hop;
@@ -58,7 +57,7 @@ void setLed(int whichLed, bool value)
 
 void setAll(bool value)
 {
-	for(int i=1; i<=3; i++)
+	for(int i=0; i<=3; i++)
 	{
 		digitalWrite(i, value);
 	}
@@ -69,6 +68,9 @@ void setAll(bool value)
 ///
 int main()
 {
+init();
+setAll(false);
+setLed(state, true);
 
 	while(1)
 		{
@@ -81,6 +83,7 @@ int main()
 			if (hop=='x')
 			{
 				cout << "grazie e arrivederci" << endl;
+				setAll(false);
 				return 0;
 			}
 			else
@@ -99,6 +102,7 @@ int main()
 				else if (state ==3 )
 				{
 					cout << "Congratulazioni! Hai raggiunto lo stato finale!" << endl;
+					setAll(false);
 					setLed(state,true);
 					delay(timeoutOnMS);
 					setAll(false);
@@ -109,7 +113,7 @@ int main()
 					cout << "il tuo hop ti ha fatto entrare nello stato: " << state << endl;
 					setAll(false);
 					setLed(state, true);
-					delay(timeoutOnMS);
+					//delay(timeoutOnMS);
 				}
 
 			}
@@ -126,7 +130,7 @@ error:
 	{
 		cout << "L'hop inserito fa si che il linguaggio non sia legale per la nostra macchina a stati" << endl;
 	}
-	int errFlag=10;
+	int flag=10;
 
 	setAll(false);
 	int onoff=1;
