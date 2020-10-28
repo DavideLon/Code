@@ -25,6 +25,8 @@ const int led_blue=3;
 const int timeoutErrorMS = 500;
 const int timeoutOnMS= 2000;
 
+//initialise states matrix
+
 vector <vector <int>> matrice = {{led_red,led_yellow,led_blue,-1},
 				{-1,1,led_blue,-1},
 				{led_green,-1,-1,-1},
@@ -35,6 +37,8 @@ static char hop;
 //
 // UTILS
 //
+
+//initialise Pi pins
 void init()
 {
 #ifndef NO_PI
@@ -47,6 +51,7 @@ void init()
 #endif
 }
 
+
 //function to interact with led
 
 void setLed(int whichLed, bool value)
@@ -54,6 +59,8 @@ void setLed(int whichLed, bool value)
 	cout << "Setting led  '"<< whichLed << "' to : " << (value ? "ON" : "OFF") << endl;
 	digitalWrite(whichLed, value);
 }
+
+//function to set/reset all leds
 
 void setAll(bool value)
 {
@@ -69,12 +76,12 @@ void setAll(bool value)
 int main()
 {
 init();
-setAll(false);
-setLed(led_green, true);
+
+	cout << "Stato attuale: '" << state << "' " <<endl;
+	setLed(led_green, true);
 
 	while(1)
 		{
-			cout << "Stato attuale: '" << state << "' " <<endl;
 			cout << "Inserisci il prossimo hop, 'x' per terminare l'esercitazione (hop legali: 'a','b','c')" << endl;
 			cin >> hop;
 			cin.clear();
@@ -89,7 +96,39 @@ setLed(led_green, true);
 			else
 			{
 				state=matrice[state][(int)hop -'a'];
-				if ((state < -1) || (state >3))
+				setAll(false);
+				switch(state)
+				{
+					case -1:
+						goto error;
+					case 0:
+						cout << "il tuo hop ti ha fatto entrare nello stato: " << state << endl;
+	                        		setLed(led_green, true);
+	                                        //delay(timeoutOnMS)
+						break;
+					case 1:
+	                                        cout << "il tuo hop ti ha fatto entrare nello stato: " << state << endl;
+                                                setLed(led_yellow, true);
+                                                //delay(timeoutOnMS);
+                                                break;
+					case 2:
+                                                cout << "il tuo hop ti ha fatto entrare nello stato: " << state << endl;
+                                                setLed(led_red, true);
+                                                //delay(timeoutOnMS);
+                                                break;
+					case 3:
+						cout << "Congratulazioni! Hai raggiunto lo stato finale!" << endl;
+	                                        setLed(led_blue,true);
+	                                        delay(timeoutOnMS);
+	                                        setAll(false);
+	                                        return 0;
+					default:
+					        state= -2;
+	                                        //cout << "hop inserito errato!!"<<endl;
+	                                        goto error;
+                                }
+
+/*				if ((state < -1) || (state >3))
 				{
 					state= -2;
 					//cout << "hop inserito errato!!"<<endl;
@@ -114,9 +153,10 @@ setLed(led_green, true);
 					setAll(false);
 					setLed(state, true);
 					//delay(timeoutOnMS);
+
 				}
 
-			}
+*/			}
 
 		}
 	return 0;
