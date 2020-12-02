@@ -1,8 +1,13 @@
 package it.unimore.dade.crosscourse.piprocess;
 
 import com.pi4j.io.gpio.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TrafficLightOff {
+
+    private final static Logger logger = LoggerFactory.getLogger(TrafficLightOff.class);
+
 
     private static final int LED_GREEN = 0;
     private static final int LED_YELLOW = 1;
@@ -43,6 +48,7 @@ public static void initPins(){
 
     public static void main(String[] args) {
          initPins();
+         logger.info("Switching Off all pins");
          pinsOff();
     }
 

@@ -1,7 +1,11 @@
 package it.unimore.dade.crosscourse.piprocess;
 
 import java.util.ArrayList;
+
 import com.pi4j.io.gpio.*;
+import it.unimore.dade.crosscourse.process.AuthProducerServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TrafficLightMSF {
 
@@ -24,6 +28,7 @@ public class TrafficLightMSF {
     private static GpioPinDigitalOutput yellowLed = null;
     private static GpioPinDigitalOutput redLed = null;
 
+    private final static Logger logger = LoggerFactory.getLogger(TrafficLightMSF.class);
 
     //private static ArrayList<Integer[]> stateMatrix = new ArrayList<Integer[]>();
 
@@ -55,27 +60,33 @@ public class TrafficLightMSF {
                         count++;
                         return state;
                     }
-                    else
+                    else{
                         switched=true;
+                        logger.info("Switching yellow value {}", yellowLed.getState());
                         return LED_YELLOW;
+                    }
                 case LED_YELLOW:
                     if(count <  timers[state]) {
                         switched=false;
                         count++;
                         return state;
                     }
-                    else
-                        switched=true;
+                    else {
+                        switched = true;
+                        logger.info("Switching yellow value {}", redLed.getState());
                         return LED_RED;
+                    }
                 case LED_RED:
                     if(count <  timers[state]) {
                         switched=false;
                         count++;
                         return state;
                     }
-                    else
-                        switched=true;
+                    else {
+                        switched = true;
+                        logger.info("Switching yellow value {}", greenLed.getState());
                         return LED_GREEN;
+                    }
             }
             return -1;
     }
@@ -106,6 +117,7 @@ public class TrafficLightMSF {
 
     public static void main(String[] args) {
         initPins();
+        logger.info("Starting TL, green on");
         try {
             while (true) {
                 state = startSemaphore();

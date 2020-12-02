@@ -1,8 +1,13 @@
 package it.unimore.dade.crosscourse.piprocess;
 
 import com.pi4j.io.gpio.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TrafficLightErrorState {
+
+    private final static Logger logger = LoggerFactory.getLogger(TrafficLightErrorState.class);
+
 
     private static final Integer LED_YELLOW = 1;
 
@@ -34,6 +39,7 @@ public class TrafficLightErrorState {
         initPin();
         try {
             while (true) {
+                logger.info("Switching yellow value {}", yellowBlinking.getState());
                 blink();
                 Thread.sleep(TIMEOUT_ERROR_MS);
             }
