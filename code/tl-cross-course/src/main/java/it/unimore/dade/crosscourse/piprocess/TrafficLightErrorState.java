@@ -8,6 +8,7 @@ public class TrafficLightErrorState {
 
     private final static Logger logger = LoggerFactory.getLogger(TrafficLightErrorState.class);
 
+    private static final int MAX_ITERATIONS =20;
 
     private static final Integer LED_YELLOW = 1;
 
@@ -36,12 +37,14 @@ public class TrafficLightErrorState {
     }
 
     public static void main(String[] args) throws InterruptedException {
+        int countIterations=0;
         initPin();
         try {
-            while (true) {
+            while (countIterations == MAX_ITERATIONS) {
                 logger.info("Switching yellow value {}", yellowBlinking.getState());
                 blink();
                 Thread.sleep(TIMEOUT_ERROR_MS);
+                countIterations++;
             }
         } catch (Exception e) {
             e.printStackTrace();

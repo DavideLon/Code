@@ -17,7 +17,9 @@ public class TrafficLightMSF {
     public static int state = 0;
     public static boolean switched = false;
 
-    public static Integer timers []= {4000,5000,4000};
+    public static Integer timers []= {60000,30000,60000};
+
+    public static int maxIterations = 20;
 
     private static int NUM_STATES = 3;
 
@@ -116,12 +118,14 @@ public class TrafficLightMSF {
     //mvn exec:java -Dexec.mainClass="it.unimore.dade.crosscourse.piprocess.TrafficLightMSF"
 
     public static void main(String[] args) {
+        int countIterations=0;
         initPins();
         logger.info("Starting TL, green on");
         try {
-            while (true) {
+            while (countIterations == maxIterations) {
                 state = startSemaphore();
                 switchLed();
+                countIterations ++;
             }
         } catch (Exception e) {
             e.printStackTrace();
