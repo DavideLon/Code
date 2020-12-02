@@ -85,13 +85,13 @@ public class AuthConsumerServer {
             	byte[] payload = msg.getPayload();
                 String command=new String(payload);
                 logger.info("Message Received ({}) Message Received: {}", topic, command);
-
-                if (topic.equals("status") && command=="on") {
+//topic.equals("tl/status") &&
+                if (command.toLowerCase().equals("on")) {
                     logger.info("Telling to switch semaphore ON");
                     StartSemaphore startSemaphore =new StartSemaphore();
                     startSemaphore.start();
                 }
-                else if(topic.equals("status") && command=="off") {
+                else if(command.toLowerCase().equals("off")) {
                     logger.info("Telling to switch semaphore OFF");
                     StopSemaphore stopSemaphore = new StopSemaphore();
                     stopSemaphore.stop();

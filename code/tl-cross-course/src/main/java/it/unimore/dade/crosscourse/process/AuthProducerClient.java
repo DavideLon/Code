@@ -64,7 +64,7 @@ public class AuthProducerClient {
 
             //Decide led's working mode: ------on/error/off------
 
-            String status = "on";
+            String status = "on";  //message sent
 
             //Internal Method to publish MQTT data using the created MQTT Client
             //The final topic is obtained merging the MQTT_BASIC_TOPIC and TOPIC in order to send the messages
