@@ -106,7 +106,7 @@ public class TrafficLightMSF {
                     greenLed.low();
                     yellowLed.high();
                 case LED_RED:
-                    greenLed.low();
+                    yellowLed.low();
                     redLed.high();
                     break;
                 default:
@@ -124,6 +124,7 @@ public class TrafficLightMSF {
         int countIterations=0;
         initPins();
         logger.info("Starting TL, green on");
+        greenLed.high();
         try {
             while (true) {
                 state = startSemaphore();
