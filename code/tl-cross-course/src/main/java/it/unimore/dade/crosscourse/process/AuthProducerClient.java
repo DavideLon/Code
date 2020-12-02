@@ -15,9 +15,9 @@ import java.util.UUID;
  * @project mqtt-playground
  * @created 14/10/2020 - 09:19
  */
-public class AuthProducerServer {
+public class AuthProducerClient {
 
-    private final static Logger logger = LoggerFactory.getLogger(AuthProducerServer.class);
+    private final static Logger logger = LoggerFactory.getLogger(AuthProducerClient.class);
 
     //BROKER URL
     private static String BROKER_URL = "tcp://192.168.1.145:1883";
@@ -62,9 +62,9 @@ public class AuthProducerServer {
             logger.info("Connected !");
 
 
-            //Decide led's working mode: ------normal/error------
+            //Decide led's working mode: ------on/error/off------
 
-            String status = "error";
+            String status = "on";
 
             //Internal Method to publish MQTT data using the created MQTT Client
             //The final topic is obtained merging the MQTT_BASIC_TOPIC and TOPIC in order to send the messages
@@ -100,7 +100,7 @@ public class AuthProducerServer {
         if (mqttClient.isConnected() && msgString != null && topic != null) {
         	
             MqttMessage msg = new MqttMessage(msgString.getBytes());
-            msg.setQos(0);
+            msg.setQos(2);
             msg.setRetained(false);
             mqttClient.publish(topic,msg);
             

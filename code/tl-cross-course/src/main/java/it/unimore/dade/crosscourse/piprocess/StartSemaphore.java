@@ -4,7 +4,7 @@ import com.pi4j.io.gpio.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TrafficLightMSF {
+public class StartSemaphore {
 
     private static final int LED_GREEN = 0;
     private static final int LED_YELLOW = 1;
@@ -16,7 +16,7 @@ public class TrafficLightMSF {
 
     public static Integer timers []= {200,100,200};
 
-    public static final int MAX_ITERATIONS = 20;
+    //public static final int MAX_ITERATIONS = 20;
 
     private static int NUM_STATES = 3;
 
@@ -27,11 +27,11 @@ public class TrafficLightMSF {
     private static GpioPinDigitalOutput yellowLed = null;
     private static GpioPinDigitalOutput redLed = null;
 
-    private final static Logger logger = LoggerFactory.getLogger(TrafficLightMSF.class);
+    private final static Logger logger = LoggerFactory.getLogger(StartSemaphore.class);
 
     //private static ArrayList<Integer[]> stateMatrix = new ArrayList<Integer[]>();
 
-    public TrafficLightMSF() {
+    public StartSemaphore() {
         initPins();
     }
 
@@ -52,48 +52,48 @@ public class TrafficLightMSF {
     }
 
     private static Integer startSemaphore() throws InterruptedException {
-            switch (state){
-                case LED_GREEN :
-                    if(count < timers[state]) {
-                        switched=false;
-                        count++;
-                        Thread.sleep(TIMEOUT_ON_MS);
-                        return state;
-                    }
-                    else{
-                        switched=true;
-                        count=0;
-                        logger.info("Switching yellow ON");
-                        return LED_YELLOW;
-                    }
-                case LED_YELLOW:
-                    if(count < timers[state]) {
-                        switched=false;
-                        count++;
-                        Thread.sleep(TIMEOUT_ON_MS);
-                        return state;
-                    }
-                    else {
-                        switched = true;
-                        count=0;
-                        logger.info("Switching red ON");
-                        return LED_RED;
-                    }
-                case LED_RED:
-                    if(count < timers[state]) {
-                        switched=false;
-                        count++;
-                        Thread.sleep(TIMEOUT_ON_MS);
-                        return state;
-                    }
-                    else {
-                        switched = true;
-                        count=0;
-                        logger.info("Switching green ON");
-                        return LED_GREEN;
-                    }
-            }
-            return -1;
+        switch (state){
+            case LED_GREEN :
+                if(count < timers[state]) {
+                    switched=false;
+                    count++;
+                    Thread.sleep(TIMEOUT_ON_MS);
+                    return state;
+                }
+                else{
+                    switched=true;
+                    count=0;
+                    logger.info("Switching yellow ON");
+                    return LED_YELLOW;
+                }
+            case LED_YELLOW:
+                if(count < timers[state]) {
+                    switched=false;
+                    count++;
+                    Thread.sleep(TIMEOUT_ON_MS);
+                    return state;
+                }
+                else {
+                    switched = true;
+                    count=0;
+                    logger.info("Switching red ON");
+                    return LED_RED;
+                }
+            case LED_RED:
+                if(count < timers[state]) {
+                    switched=false;
+                    count++;
+                    Thread.sleep(TIMEOUT_ON_MS);
+                    return state;
+                }
+                else {
+                    switched = true;
+                    count=0;
+                    logger.info("Switching green ON");
+                    return LED_GREEN;
+                }
+        }
+        return -1;
     }
 
     private static void switchLed() {
@@ -120,18 +120,18 @@ public class TrafficLightMSF {
     //execute local on the RPI from command line
     //mvn -U clean install
     //mvn exec:java -Dexec.mainClass="<Your Main Class>"
-    //mvn exec:java -Dexec.mainClass="it.unimore.dade.crosscourse.piprocess.TrafficLightMSF"
+    //mvn exec:java -Dexec.mainClass="it.unimore.dade.crosscourse.test.TrafficLightMSF"
 
-    public static void main(String[] args) {
-        int countIterations=0;
-        initPins();
+    public static void start() {
+        //int countIterations=0;
+        //initPins();
         logger.info("Starting TL, green on");
         greenLed.high();
         try {
             while (true) {
                 state = startSemaphore();
                 switchLed();
-                countIterations ++;
+                //countIterations ++;
             }
         } catch (Exception e) {
             e.printStackTrace();

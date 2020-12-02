@@ -1,8 +1,9 @@
 package it.unimore.dade.crosscourse.process;
 
-import it.unimore.dade.crosscourse.piprocess.TrafficLightErrorState;
-import it.unimore.dade.crosscourse.piprocess.TrafficLightMSF;
-import it.unimore.dade.crosscourse.piprocess.TrafficLightOff;
+import it.unimore.dade.crosscourse.piprocess.ErrorStateSemaphore;
+import it.unimore.dade.crosscourse.piprocess.StartSemaphore;
+import it.unimore.dade.crosscourse.piprocess.StopSemaphore;
+
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
@@ -21,9 +22,9 @@ import java.util.UUID;
  * @project mqtt-playground
  * @created 14/10/2020 - 09:19
  */
-public class AuthConsumerClient {
+public class AuthConsumerServer {
 
-    private final static Logger logger = LoggerFactory.getLogger(AuthConsumerClient.class);
+    private final static Logger logger = LoggerFactory.getLogger(AuthConsumerServer.class);
 
     //IP Address of the target MQTT Broker
     private static String BROKER_ADDRESS = "192.168.1.145";
@@ -85,14 +86,20 @@ public class AuthConsumerClient {
                 String command=new String(payload);
                 logger.info("Message Received ({}) Message Received: {}", topic, command);
 
-                if (command=="on") {
-                    TrafficLightMSF trafficLightMSF = new TrafficLightMSF();
+                if (topic.equals("status") && command=="on") {
+                    logger.info("Telling to switch semaphore ON");
+                    StartSemaphore startSemaphore =new StartSemaphore();
+                    startSemaphore.start();
                 }
-                else if(command=="blink") {
-                    TrafficLightErrorState trafficLightErrorState = new TrafficLightErrorState();
+                else if(topic.equals("status") && command=="off") {
+                    logger.info("Telling to switch semaphore OFF");
+                    StopSemaphore stopSemaphore = new StopSemaphore();
+                    stopSemaphore.stop();
                 }
                 else {
-                    TrafficLightOff trafficLightOff = new TrafficLightOff();
+                    logger.info("Entering in blinking yellow error state");
+                    ErrorStateSemaphore errorStateSemaphore = new ErrorStateSemaphore();
+                    errorStateSemaphore.pulse();
                 }
 
             });

@@ -1,4 +1,4 @@
-package it.unimore.dade.crosscourse.piprocess;
+package it.unimore.dade.crosscourse.test;
 
 import com.pi4j.io.gpio.*;
 import org.slf4j.Logger;
