@@ -14,13 +14,13 @@ public class TrafficLightMSF {
     public static int state = 0;
     public static boolean switched = false;
 
-    public static Integer timers []= {60000,30000,60000};
+    public static Integer timers []= {200,100,200};
 
-    public static int MAX_ITERATIONS = 20;
+    public static final int MAX_ITERATIONS = 20;
 
     private static int NUM_STATES = 3;
 
-    private static final int TIMEOUT_ON_MS = 1000;
+    private static final int TIMEOUT_ON_MS = 10;
 
     private static final GpioController gpio = GpioFactory.getInstance();
     private static GpioPinDigitalOutput greenLed = null;
@@ -51,12 +51,13 @@ public class TrafficLightMSF {
         yellowLed.setShutdownOptions(true, PinState.LOW);
     }
 
-    private static Integer startSemaphore() {
+    private static Integer startSemaphore() throws InterruptedException {
             switch (state){
                 case LED_GREEN :
                     if(count <  timers[state]) {
                         switched=false;
                         count++;
+                        Thread.sleep(TIMEOUT_ON_MS);
                         return state;
                     }
                     else{
@@ -68,22 +69,24 @@ public class TrafficLightMSF {
                     if(count <  timers[state]) {
                         switched=false;
                         count++;
+                        Thread.sleep(TIMEOUT_ON_MS);
                         return state;
                     }
                     else {
                         switched = true;
-                        logger.info("Switching yellow value {}", redLed.getState());
+                        logger.info("Switching red value {}", redLed.getState());
                         return LED_RED;
                     }
                 case LED_RED:
                     if(count <  timers[state]) {
                         switched=false;
                         count++;
+                        Thread.sleep(TIMEOUT_ON_MS);
                         return state;
                     }
                     else {
                         switched = true;
-                        logger.info("Switching yellow value {}", greenLed.getState());
+                        logger.info("Switching green value {}", greenLed.getState());
                         return LED_GREEN;
                     }
             }
@@ -119,7 +122,7 @@ public class TrafficLightMSF {
         initPins();
         logger.info("Starting TL, green on");
         try {
-            while (true) {
+            while (countIterations < MAX_ITERATIONS) {
                 state = startSemaphore();
                 switchLed();
                 countIterations ++;
