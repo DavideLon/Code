@@ -9,17 +9,18 @@ public class TrafficLightOff {
     private static final int LED_RED = 2;
 
     private static final GpioController gpio = GpioFactory.getInstance();
+    private static GpioPinDigitalOutput greenLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN),
+            PinState.LOW);      // PIN STARTUP STATE
+    private static GpioPinDigitalOutput yellowLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_YELLOW),
+            PinState.LOW);      // PIN STARTUP STATE
+    private static GpioPinDigitalOutput redLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_RED),
+            PinState.LOW);      // PIN STARTUP STATE
 
-    public TrafficLightOff() {
-    }
+     private static void pinsOff() {
 
-    private static void pinsOff() {
-        GpioPinDigitalOutput greenLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN),
-                PinState.LOW);      // PIN STARTUP STATE
-        GpioPinDigitalOutput yellowLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_YELLOW),
-                PinState.LOW);      // PIN STARTUP STATE
-        GpioPinDigitalOutput redLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_RED),
-                PinState.LOW);      // PIN STARTUP STATE
+        greenLed.low();
+        yellowLed.low();
+        redLed.low();
     }
 
     public static void main(String[] args) {

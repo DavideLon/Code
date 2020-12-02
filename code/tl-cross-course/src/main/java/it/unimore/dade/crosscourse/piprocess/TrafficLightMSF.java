@@ -80,16 +80,6 @@ public class TrafficLightMSF {
     private static void switchLed() {
         if(switched) {
             switch (state) {
-/*                case LED_GREEN:
-                    redLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN), PinState.LOW);
-                    greenLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN), PinState.HIGH);
-                case LED_YELLOW:
-                    greenLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN), PinState.LOW);
-                    yellowLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN), PinState.HIGH);
-                case LED_RED:
-                    greenLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN), PinState.LOW);
-                    redLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN), PinState.HIGH);
-*/
                 case LED_GREEN:
                     redLed.low();
                     greenLed.high();
