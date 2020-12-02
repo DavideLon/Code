@@ -25,23 +25,26 @@ public class TrafficLightMSF {
     private static GpioPinDigitalOutput redLed = null;
 
 
-    private static ArrayList<Integer[]> stateMatrix = new ArrayList<Integer[]>();
+    //private static ArrayList<Integer[]> stateMatrix = new ArrayList<Integer[]>();
 
     public TrafficLightMSF() {
         initPins();
     }
 
-    public void initPins(){
+    public static void initPins(){
         // provision gpio pins as output pins and make sure are set to LOW at startup
         greenLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN),   // PIN NUMBER
                 "My Green LED",           // PIN FRIENDLY NAME (optional)
                 PinState.LOW);      // PIN STARTUP STATE (optional)
+        greenLed.setShutdownOptions(true, PinState.LOW);
         yellowLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_YELLOW),   // PIN NUMBER
                 "My Yellow LED",           // PIN FRIENDLY NAME (optional)
                 PinState.LOW);      // PIN STARTUP STATE (optional)
+        yellowLed.setShutdownOptions(true, PinState.LOW);
         redLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_RED),   // PIN NUMBER
                 "My Red LED",           // PIN FRIENDLY NAME (optional)
                 PinState.LOW);      // PIN STARTUP STATE (optional)
+        yellowLed.setShutdownOptions(true, PinState.LOW);
     }
 
     private static Integer startSemaphore() {
@@ -102,6 +105,7 @@ public class TrafficLightMSF {
     //mvn exec:java -Dexec.mainClass="it.unimore.dade.crosscourse.piprocess.TrafficLightMSF"
 
     public static void main(String[] args) {
+        initPins();
         try {
             while (true) {
                 state = startSemaphore();

@@ -16,9 +16,10 @@ public class TrafficLightErrorState {
         initPin();
     }
 
-    private void initPin() {
+    private static void initPin() {
         yellowBlinking = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_YELLOW),
                 "Blinking yellow error state",PinState.LOW);
+        yellowBlinking.setShutdownOptions(true, PinState.LOW);
     }
 
     private static void blink(){
@@ -30,6 +31,7 @@ public class TrafficLightErrorState {
     }
 
     public static void main(String[] args) throws InterruptedException {
+        initPin();
         try {
             while (true) {
                 blink();
