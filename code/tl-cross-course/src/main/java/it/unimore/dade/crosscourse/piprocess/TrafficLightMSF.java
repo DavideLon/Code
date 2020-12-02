@@ -48,13 +48,13 @@ public class TrafficLightMSF {
         redLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_RED),   // PIN NUMBER
                 "My Red LED",           // PIN FRIENDLY NAME (optional)
                 PinState.LOW);      // PIN STARTUP STATE (optional)
-        yellowLed.setShutdownOptions(true, PinState.LOW);
+        redLed.setShutdownOptions(true, PinState.LOW);
     }
 
     private static Integer startSemaphore() throws InterruptedException {
             switch (state){
                 case LED_GREEN :
-                    if(count <  timers[state]) {
+                    if(count < timers[state]) {
                         switched=false;
                         count++;
                         Thread.sleep(TIMEOUT_ON_MS);
@@ -63,11 +63,11 @@ public class TrafficLightMSF {
                     else{
                         switched=true;
                         count=0;
-                        logger.info("Switching yellow value {}", yellowLed.getState());
+                        logger.info("Switching yellow ON");
                         return LED_YELLOW;
                     }
                 case LED_YELLOW:
-                    if(count <  timers[state]) {
+                    if(count < timers[state]) {
                         switched=false;
                         count++;
                         Thread.sleep(TIMEOUT_ON_MS);
@@ -76,11 +76,11 @@ public class TrafficLightMSF {
                     else {
                         switched = true;
                         count=0;
-                        logger.info("Switching red value {}", redLed.getState());
+                        logger.info("Switching red ON");
                         return LED_RED;
                     }
                 case LED_RED:
-                    if(count <  timers[state]) {
+                    if(count < timers[state]) {
                         switched=false;
                         count++;
                         Thread.sleep(TIMEOUT_ON_MS);
@@ -89,7 +89,7 @@ public class TrafficLightMSF {
                     else {
                         switched = true;
                         count=0;
-                        logger.info("Switching green value {}", greenLed.getState());
+                        logger.info("Switching green ON");
                         return LED_GREEN;
                     }
             }
@@ -102,9 +102,11 @@ public class TrafficLightMSF {
                 case LED_GREEN:
                     redLed.low();
                     greenLed.high();
+                    break;
                 case LED_YELLOW:
                     greenLed.low();
                     yellowLed.high();
+                    break;
                 case LED_RED:
                     yellowLed.low();
                     redLed.high();
