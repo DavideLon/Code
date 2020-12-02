@@ -40,7 +40,7 @@ public class TrafficLightErrorState {
         int countIterations=0;
         initPin();
         try {
-            while (countIterations == MAX_ITERATIONS) {
+            while (countIterations < MAX_ITERATIONS) {
                 logger.info("Switching yellow value {}", yellowBlinking.getState());
                 blink();
                 Thread.sleep(TIMEOUT_ERROR_MS);

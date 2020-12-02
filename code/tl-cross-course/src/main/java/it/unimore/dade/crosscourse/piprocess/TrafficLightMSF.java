@@ -1,9 +1,6 @@
 package it.unimore.dade.crosscourse.piprocess;
 
-import java.util.ArrayList;
-
 import com.pi4j.io.gpio.*;
-import it.unimore.dade.crosscourse.process.AuthProducerServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +16,7 @@ public class TrafficLightMSF {
 
     public static Integer timers []= {60000,30000,60000};
 
-    public static int maxIterations = 20;
+    public static int MAX_ITERATIONS = 20;
 
     private static int NUM_STATES = 3;
 
@@ -122,7 +119,7 @@ public class TrafficLightMSF {
         initPins();
         logger.info("Starting TL, green on");
         try {
-            while (countIterations == maxIterations) {
+            while (countIterations < MAX_ITERATIONS) {
                 state = startSemaphore();
                 switchLed();
                 countIterations ++;
