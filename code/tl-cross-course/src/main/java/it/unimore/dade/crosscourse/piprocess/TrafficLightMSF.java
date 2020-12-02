@@ -62,6 +62,7 @@ public class TrafficLightMSF {
                     }
                     else{
                         switched=true;
+                        count=0;
                         logger.info("Switching yellow value {}", yellowLed.getState());
                         return LED_YELLOW;
                     }
@@ -74,6 +75,7 @@ public class TrafficLightMSF {
                     }
                     else {
                         switched = true;
+                        count=0;
                         logger.info("Switching red value {}", redLed.getState());
                         return LED_RED;
                     }
@@ -86,6 +88,7 @@ public class TrafficLightMSF {
                     }
                     else {
                         switched = true;
+                        count=0;
                         logger.info("Switching green value {}", greenLed.getState());
                         return LED_GREEN;
                     }
@@ -122,7 +125,7 @@ public class TrafficLightMSF {
         initPins();
         logger.info("Starting TL, green on");
         try {
-            while (countIterations < MAX_ITERATIONS) {
+            while (true) {
                 state = startSemaphore();
                 switchLed();
                 countIterations ++;
