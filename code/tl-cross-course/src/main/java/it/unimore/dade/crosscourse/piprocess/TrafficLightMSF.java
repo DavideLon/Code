@@ -119,7 +119,7 @@ public class TrafficLightMSF {
         initPins();
         logger.info("Starting TL, green on");
         try {
-            while (countIterations < MAX_ITERATIONS) {
+            while (true) {
                 state = startSemaphore();
                 switchLed();
                 countIterations ++;
