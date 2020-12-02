@@ -20,6 +20,11 @@ public class TrafficLightMSF {
     private static final int TIMEOUT_ON_MS = 1000;
 
     private static final GpioController gpio = GpioFactory.getInstance();
+    private static GpioPinDigitalOutput greenLed = null;
+    private static GpioPinDigitalOutput yellowLed = null;
+    private static GpioPinDigitalOutput redLed = null;
+
+
     private static ArrayList<Integer[]> stateMatrix = new ArrayList<Integer[]>();
 
     public TrafficLightMSF() {
@@ -28,13 +33,13 @@ public class TrafficLightMSF {
 
     public void initPins(){
         // provision gpio pins as output pins and make sure are set to LOW at startup
-        GpioPinDigitalOutput greenLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN),   // PIN NUMBER
+        greenLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN),   // PIN NUMBER
                 "My Green LED",           // PIN FRIENDLY NAME (optional)
                 PinState.LOW);      // PIN STARTUP STATE (optional)
-        GpioPinDigitalOutput yellowLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_YELLOW),   // PIN NUMBER
+        yellowLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_YELLOW),   // PIN NUMBER
                 "My Yellow LED",           // PIN FRIENDLY NAME (optional)
                 PinState.LOW);      // PIN STARTUP STATE (optional)
-        GpioPinDigitalOutput redLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_RED),   // PIN NUMBER
+        redLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_RED),   // PIN NUMBER
                 "My Red LED",           // PIN FRIENDLY NAME (optional)
                 PinState.LOW);      // PIN STARTUP STATE (optional)
     }
@@ -73,12 +78,9 @@ public class TrafficLightMSF {
     }
 
     private static void switchLed() {
-        GpioPinDigitalOutput greenLed;
-        GpioPinDigitalOutput yellowLed;
-        GpioPinDigitalOutput redLed;
         if(switched) {
             switch (state) {
-                case LED_GREEN:
+/*                case LED_GREEN:
                     redLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN), PinState.LOW);
                     greenLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN), PinState.HIGH);
                 case LED_YELLOW:
@@ -87,9 +89,27 @@ public class TrafficLightMSF {
                 case LED_RED:
                     greenLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN), PinState.LOW);
                     redLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN), PinState.HIGH);
+*/
+                case LED_GREEN:
+                    redLed.low();
+                    greenLed.high();
+                case LED_YELLOW:
+                    greenLed.low();
+                    yellowLed.high();
+                case LED_RED:
+                    greenLed.low();
+                    redLed.high();
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + state);
             }
         }
     }
+
+    //execute local on the RPI from command line
+    //mvn -U clean install
+    //mvn exec:java -Dexec.mainClass="<Your Main Class>"
+    //mvn exec:java -Dexec.mainClass="it.unimore.dade.crosscourse.piprocess.TrafficLightMSF"
 
     public static void main(String[] args) {
         try {

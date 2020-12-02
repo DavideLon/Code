@@ -10,7 +10,7 @@ public class TrafficLightErrorState {
 
     private static final GpioController gpio = GpioFactory.getInstance();
 
-    private static GpioPinDigitalOutput yellowBlinking;
+    private static GpioPinDigitalOutput yellowBlinking=null;
 
     public TrafficLightErrorState() {
         initPin();
@@ -22,8 +22,11 @@ public class TrafficLightErrorState {
     }
 
     private static void blink(){
-        yellowBlinking = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_YELLOW),
-                yellowBlinking.isState(PinState.LOW)? PinState.HIGH:PinState.LOW);
+        if (yellowBlinking.isHigh()) {
+            yellowBlinking.low();
+        } else {
+            yellowBlinking.high();
+        }
     }
 
     public static void main(String[] args) throws InterruptedException {
