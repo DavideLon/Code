@@ -8,6 +8,8 @@ public class ErrorStateSemaphore {
 
     private final static Logger logger = LoggerFactory.getLogger(ErrorStateSemaphore.class);
 
+    protected SemaphoreStatusListener semaphoreStatusListener;
+
     private static final int MAX_ITERATIONS =20;
 
     private static final Integer LED_YELLOW = 1;
@@ -23,6 +25,7 @@ public class ErrorStateSemaphore {
     }
 
     private static void initPin() {
+
         yellowBlinking = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_YELLOW),
                 "Blinking yellow error state",PinState.LOW);
         yellowBlinking.setShutdownOptions(true, PinState.LOW);

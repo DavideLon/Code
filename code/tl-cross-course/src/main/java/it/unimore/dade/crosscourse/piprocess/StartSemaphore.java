@@ -4,7 +4,12 @@ import com.pi4j.io.gpio.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StartSemaphore {
+
+    protected List<SemaphoreStatusListener> semaphoreStatusListenerList;
 
     private static final int LED_GREEN = 0;
     private static final int LED_YELLOW = 1;
@@ -33,6 +38,37 @@ public class StartSemaphore {
 
     public StartSemaphore() {
         initPins();
+        //this.semaphoreStatusListenerList = new ArrayList<>();
+        //addDataListener(semaphoreStatusListener);
+        //notifyUpdatedStatus("on");
+    }
+
+    public void addDataListener(SemaphoreStatusListener semaphoreStatusListener) {
+        if(this.semaphoreStatusListenerList!= null)
+            this.semaphoreStatusListenerList.add(semaphoreStatusListener);
+    }
+
+    public void removeDataListener(SemaphoreStatusListener semaphoreStatusListener) {
+        if(this.semaphoreStatusListenerList!= null && this.semaphoreStatusListenerList.contains(semaphoreStatusListener))
+            this.semaphoreStatusListenerList.remove(semaphoreStatusListener);
+    }
+
+    //notifies the status change to all the listeners in the list
+    //every listener is linked to different parts in the code
+
+    protected void notifyUpdatedStatus(String status) {
+        if(this.semaphoreStatusListenerList!= null && this.semaphoreStatusListenerList.size()>0)
+            this.semaphoreStatusListenerList.forEach(semaphoreStatusListener -> {
+               if (semaphoreStatusListener!= null) {
+                   try {
+                       semaphoreStatusListener.onStatusChanged(status);
+                   } catch (InterruptedException e) {
+                       e.printStackTrace();
+                   }
+               }
+            });
+        else
+            logger.error("Empty list or Null Status Listener! Nothing to notify");
     }
 
     public static void initPins(){
@@ -125,6 +161,7 @@ public class StartSemaphore {
     public static void start() {
         //int countIterations=0;
         //initPins();
+
         logger.info("Starting TL, green on");
         greenLed.high();
         try {

@@ -1,13 +1,11 @@
 package it.unimore.dade.crosscourse.process;
 
 import it.unimore.dade.crosscourse.piprocess.ErrorStateSemaphore;
+import it.unimore.dade.crosscourse.piprocess.SemaphoreStatusListener;
 import it.unimore.dade.crosscourse.piprocess.StartSemaphore;
 import it.unimore.dade.crosscourse.piprocess.StopSemaphore;
 
-import org.eclipse.paho.client.mqttv3.IMqttClient;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,8 +65,8 @@ public class AuthConsumerServer {
             MqttConnectOptions options = new MqttConnectOptions();
             options.setUserName(MQTT_USERNAME);
             options.setPassword(new String(MQTT_PASSWORD).toCharArray());
-            options.setAutomaticReconnect(true);
-            options.setCleanSession(true);
+            options.setAutomaticReconnect(false);
+            options.setCleanSession(false);
             options.setConnectionTimeout(10);
 
             //Connect to the target broker
@@ -85,22 +83,30 @@ public class AuthConsumerServer {
             	byte[] payload = msg.getPayload();
                 String command=new String(payload);
                 logger.info("Message Received ({}) Message Received: {}", topic, command);
+
+                SemaphoreStatusListener semaphoreStatusListener = new SemaphoreStatusListener() {
+                    @Override
+                    public void onStatusChanged(String command) throws InterruptedException {
+                        if (command.toLowerCase().equals("on")) {
+
+                            StartSemaphore startSemaphore =new StartSemaphore();
+                            startSemaphore.start();
+
+
+                        }
+                        else if(command.toLowerCase().equals("off")) {
+                            logger.info("Telling to switch semaphore OFF");
+                            StopSemaphore stopSemaphore = new StopSemaphore();
+                            stopSemaphore.stop();
+                        }
+                        else {
+                            logger.info("Entering in blinking yellow error state");
+                            ErrorStateSemaphore errorStateSemaphore = new ErrorStateSemaphore();
+                            errorStateSemaphore.pulse();
+                        }
+                    }
+                };
 //topic.equals("tl/status") &&
-                if (command.toLowerCase().equals("on")) {
-                    logger.info("Telling to switch semaphore ON");
-                    StartSemaphore startSemaphore =new StartSemaphore();
-                    startSemaphore.start();
-                }
-                else if(command.toLowerCase().equals("off")) {
-                    logger.info("Telling to switch semaphore OFF");
-                    StopSemaphore stopSemaphore = new StopSemaphore();
-                    stopSemaphore.stop();
-                }
-                else {
-                    logger.info("Entering in blinking yellow error state");
-                    ErrorStateSemaphore errorStateSemaphore = new ErrorStateSemaphore();
-                    errorStateSemaphore.pulse();
-                }
 
             });
 

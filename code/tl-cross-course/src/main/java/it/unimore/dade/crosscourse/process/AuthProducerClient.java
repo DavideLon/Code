@@ -5,7 +5,9 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Scanner;
 import java.util.UUID;
+import java.util.concurrent.Executor;
 
 /**
  * Simple MQTT Producer using the library Eclipse Paho
@@ -35,6 +37,7 @@ public class AuthProducerClient {
     //the final used topic
     private static final String TOPIC = "tl/status";
 
+
     public static void main(String[] args) {
 
         logger.info("Auth SimpleProducer started ...");
@@ -61,17 +64,27 @@ public class AuthProducerClient {
 
             logger.info("Connected !");
 
+            int count=0;
+            String status = new String();
 
             //Decide led's working mode: ------on/error/off------
 
-            String status = "on";  //message sent
+            while (count<10 || status.equalsIgnoreCase("off")) {
 
-            //Internal Method to publish MQTT data using the created MQTT Client
-            //The final topic is obtained merging the MQTT_BASIC_TOPIC and TOPIC in order to send the messages
-            //to the correct topic root associated to the authenticated user
-            //Eg. /iot/user/000001/tl/status
-            publishData(client, MQTT_BASIC_TOPIC + TOPIC, status);
+                Scanner sc= new Scanner(System.in); //System.in is a standard input stream
+                System.out.print("Enter a command (on, off, error): ");
+                status= sc.nextLine();              //reads string
+                System.out.print("You have entered: "+status);
 
+                //String status = "error";  //message sent
+
+                //Internal Method to publish MQTT data using the created MQTT Client
+                //The final topic is obtained merging the MQTT_BASIC_TOPIC and TOPIC in order to send the messages
+                //to the correct topic root associated to the authenticated user
+                //Eg. /iot/user/000001/tl/status
+                publishData(client, MQTT_BASIC_TOPIC + TOPIC, status);
+                count++;
+            }
 
             //Disconnect from the broker and close the connection
             client.disconnect();

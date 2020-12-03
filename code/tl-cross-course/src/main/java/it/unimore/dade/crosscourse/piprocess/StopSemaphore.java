@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 
 public class StopSemaphore {
 
+    protected SemaphoreStatusListener semaphoreStatusListener;
+
     private final static Logger logger = LoggerFactory.getLogger(StopSemaphore.class);
 
     private static final int LED_GREEN = 0;
