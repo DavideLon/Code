@@ -106,6 +106,8 @@ public class AuthConsumerServer {
                         }
                     }
                 };
+                semaphoreStatusListener.onStatusChanged(command);
+                logger.info("new message received");
 //topic.equals("tl/status") &&
 
             });
