@@ -84,11 +84,11 @@ public class AuthConsumerServer {
                 String command=new String(payload);
                 logger.info("Message Received ({}) Message Received: {}", topic, command);
 
-                StartSemaphore startSemaphore = null;
+                StartSemaphore startSemaphore = new StartSemaphore();
                 //startSemaphore.start();
-                StopSemaphore stopSemaphore = null;
+                StopSemaphore stopSemaphore = new StopSemaphore();
                 //stopSemaphore.start();
-                ErrorStateSemaphore errorStateSemaphore = null;
+                ErrorStateSemaphore errorStateSemaphore = new ErrorStateSemaphore();
                 //errorStateSemaphore.start();
 
                 SemaphoreStatusListener semaphoreStatusListener = new SemaphoreStatusListener() {
