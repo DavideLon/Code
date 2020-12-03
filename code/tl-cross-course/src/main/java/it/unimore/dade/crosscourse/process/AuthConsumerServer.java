@@ -85,11 +85,11 @@ public class AuthConsumerServer {
                 logger.info("Message Received ({}) Message Received: {}", topic, command);
 
                 StartSemaphore startSemaphore = null;
-                startSemaphore.start();
+                //startSemaphore.start();
                 StopSemaphore stopSemaphore = null;
-                stopSemaphore.start();
+                //stopSemaphore.start();
                 ErrorStateSemaphore errorStateSemaphore = null;
-                errorStateSemaphore.start();
+                //errorStateSemaphore.start();
 
                 SemaphoreStatusListener semaphoreStatusListener = new SemaphoreStatusListener() {
                     @Override
@@ -114,6 +114,7 @@ public class AuthConsumerServer {
                                 stopSemaphore.run();
                             }
                              */
+                            logger.info("Telling to switch semaphore OFF");
                             startSemaphore.interrupt();
                             errorStateSemaphore.interrupt();
                             stopSemaphore.run();
@@ -130,8 +131,10 @@ public class AuthConsumerServer {
                         }
                     }
                 };
-                while(!command.equalsIgnoreCase("off"))
+                do {
+                    logger.debug("aaaaaaaaaaaa");
                     semaphoreStatusListener.onStatusChanged(command);
+                }while(!command.equalsIgnoreCase("off"));
 
 
 //topic.equals("tl/status") &&

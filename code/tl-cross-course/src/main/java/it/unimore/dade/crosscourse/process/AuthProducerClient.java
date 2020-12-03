@@ -74,7 +74,7 @@ public class AuthProducerClient {
                 Scanner sc= new Scanner(System.in); //System.in is a standard input stream
                 System.out.print("Enter a command (on, off, error): ");
                 status= sc.nextLine();              //reads string
-                System.out.print("You have entered: "+status);
+                System.out.print("You have entered: "+status+"\n");
 
                 //String status = "error";  //message sent
 
