@@ -4,7 +4,7 @@ import com.pi4j.io.gpio.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ErrorStateSemaphore extends Thread {
+public class ErrorStateSemaphore implements Runnable {
 
     private final static Logger logger = LoggerFactory.getLogger(ErrorStateSemaphore.class);
 

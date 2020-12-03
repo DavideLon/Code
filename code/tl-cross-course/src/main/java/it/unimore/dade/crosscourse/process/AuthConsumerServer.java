@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * Simple MQTT Consumer using the library Eclipse Paho
@@ -23,6 +25,8 @@ import java.util.UUID;
 public class AuthConsumerServer {
 
     private final static Logger logger = LoggerFactory.getLogger(AuthConsumerServer.class);
+
+    static Executor executor = Executors.newSingleThreadExecutor();
 
     //IP Address of the target MQTT Broker
     private static String BROKER_ADDRESS = "192.168.1.145";
@@ -84,12 +88,18 @@ public class AuthConsumerServer {
                 String command=new String(payload);
                 logger.info("Message Received ({}) Message Received: {}", topic, command);
 
+                Thread startSemaphore = new Thread(new StartSemaphore());
+                Thread stopSemaphore = new Thread(new StopSemaphore());
+                Thread errorStateSemaphore = new Thread(new ErrorStateSemaphore());
+                /*
                 StartSemaphore startSemaphore = new StartSemaphore();
                 //startSemaphore.start();
                 StopSemaphore stopSemaphore = new StopSemaphore();
                 //stopSemaphore.start();
                 ErrorStateSemaphore errorStateSemaphore = new ErrorStateSemaphore();
                 //errorStateSemaphore.start();
+*/
+                executor.execute(startSemaphore);
 
                 SemaphoreStatusListener semaphoreStatusListener = new SemaphoreStatusListener() {
                     @Override
@@ -97,11 +107,11 @@ public class AuthConsumerServer {
                         if (command.toLowerCase().equals("on")) {
                             if (errorStateSemaphore==null || errorStateSemaphore.isInterrupted()) {
                                 logger.info("Telling to switch semaphore ON");
-                                startSemaphore.run();
+                                startSemaphore.start();
                             }
                             else{
                                 errorStateSemaphore.interrupt();
-                                startSemaphore.run();
+                                startSemaphore.start();
                             }
                         }
                         else if(command.toLowerCase().equals("off")) {
@@ -117,22 +127,21 @@ public class AuthConsumerServer {
                             logger.info("Telling to switch semaphore OFF");
                             startSemaphore.interrupt();
                             errorStateSemaphore.interrupt();
-                            stopSemaphore.run();
+                            stopSemaphore.start();
                         }
                         else {
                             if ((startSemaphore==null || startSemaphore.isInterrupted())) {
                                 logger.info("Entering in blinking yellow error state");
-                                stopSemaphore.run();
+                                stopSemaphore.start();
                             }
                             else{
                                 startSemaphore.interrupt();
-                                stopSemaphore.run();
+                                stopSemaphore.start();
                             }
                         }
                     }
                 };
                 do {
-                    logger.debug("aaaaaaaaaaaa");
                     semaphoreStatusListener.onStatusChanged(command);
                 }while(!command.equalsIgnoreCase("off"));
 

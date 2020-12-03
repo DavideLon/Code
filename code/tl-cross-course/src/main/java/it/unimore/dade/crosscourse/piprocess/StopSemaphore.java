@@ -4,7 +4,7 @@ import com.pi4j.io.gpio.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StopSemaphore extends Thread {
+public class StopSemaphore implements Runnable {
 
     protected SemaphoreStatusListener semaphoreStatusListener;
 

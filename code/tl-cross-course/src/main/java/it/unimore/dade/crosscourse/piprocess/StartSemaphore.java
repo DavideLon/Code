@@ -7,9 +7,11 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StartSemaphore extends Thread{
+public class StartSemaphore implements Runnable {
 
     protected List<SemaphoreStatusListener> semaphoreStatusListenerList;
+
+    volatile boolean shutdown = false;
 
     private static final int LED_GREEN = 0;
     private static final int LED_YELLOW = 1;
@@ -35,6 +37,10 @@ public class StartSemaphore extends Thread{
     private final static Logger logger = LoggerFactory.getLogger(StartSemaphore.class);
 
     //private static ArrayList<Integer[]> stateMatrix = new ArrayList<Integer[]>();
+
+    public void shutdown(){
+        shutdown=!shutdown;
+    }
 
     public StartSemaphore() {
         initPins();
@@ -165,7 +171,7 @@ public class StartSemaphore extends Thread{
         logger.info("Starting TL, green on");
         greenLed.high();
         try {
-            while (true) {
+            while (!shutdown) {
                 state = startSemaphore();
                 switchLed();
                 //countIterations ++;
