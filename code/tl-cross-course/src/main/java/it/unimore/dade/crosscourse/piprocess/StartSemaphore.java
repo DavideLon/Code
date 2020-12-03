@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StartSemaphore {
+public class StartSemaphore extends Thread{
 
     protected List<SemaphoreStatusListener> semaphoreStatusListenerList;
 
@@ -158,7 +158,7 @@ public class StartSemaphore {
     //mvn exec:java -Dexec.mainClass="<Your Main Class>"
     //mvn exec:java -Dexec.mainClass="it.unimore.dade.crosscourse.test.TrafficLightMSF"
 
-    public static void start() {
+    public void run() {
         //int countIterations=0;
         //initPins();
 

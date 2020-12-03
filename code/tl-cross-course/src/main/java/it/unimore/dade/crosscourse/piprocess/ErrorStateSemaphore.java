@@ -4,7 +4,7 @@ import com.pi4j.io.gpio.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ErrorStateSemaphore {
+public class ErrorStateSemaphore extends Thread {
 
     private final static Logger logger = LoggerFactory.getLogger(ErrorStateSemaphore.class);
 
@@ -39,7 +39,7 @@ public class ErrorStateSemaphore {
         }
     }
 
-    public static void pulse() throws InterruptedException {
+    public void run() {
         int countIterations=0;
         //initPin();
         try {

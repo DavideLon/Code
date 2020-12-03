@@ -84,30 +84,56 @@ public class AuthConsumerServer {
                 String command=new String(payload);
                 logger.info("Message Received ({}) Message Received: {}", topic, command);
 
+                StartSemaphore startSemaphore = null;
+                startSemaphore.start();
+                StopSemaphore stopSemaphore = null;
+                stopSemaphore.start();
+                ErrorStateSemaphore errorStateSemaphore = null;
+                errorStateSemaphore.start();
+
                 SemaphoreStatusListener semaphoreStatusListener = new SemaphoreStatusListener() {
                     @Override
                     public void onStatusChanged(String command) throws InterruptedException {
                         if (command.toLowerCase().equals("on")) {
-
-                            StartSemaphore startSemaphore =new StartSemaphore();
-                            startSemaphore.start();
-
-
+                            if (errorStateSemaphore==null || errorStateSemaphore.isInterrupted()) {
+                                logger.info("Telling to switch semaphore ON");
+                                startSemaphore.run();
+                            }
+                            else{
+                                errorStateSemaphore.interrupt();
+                                startSemaphore.run();
+                            }
                         }
                         else if(command.toLowerCase().equals("off")) {
-                            logger.info("Telling to switch semaphore OFF");
-                            StopSemaphore stopSemaphore = new StopSemaphore();
-                            stopSemaphore.stop();
+                            /*if ((startSemaphore==null || startSemaphore.isInterrupted())&&errorStateSemaphore==null || errorStateSemaphore,isInterrupted()) {
+                                logger.info("Telling to switch semaphore OFF");
+                                stopSemaphore.run();
+                            }
+                            else{
+                                startSemaphore.interrupt();
+                                stopSemaphore.run();
+                            }
+                             */
+                            startSemaphore.interrupt();
+                            errorStateSemaphore.interrupt();
+                            stopSemaphore.run();
                         }
                         else {
-                            logger.info("Entering in blinking yellow error state");
-                            ErrorStateSemaphore errorStateSemaphore = new ErrorStateSemaphore();
-                            errorStateSemaphore.pulse();
+                            if ((startSemaphore==null || startSemaphore.isInterrupted())) {
+                                logger.info("Entering in blinking yellow error state");
+                                stopSemaphore.run();
+                            }
+                            else{
+                                startSemaphore.interrupt();
+                                stopSemaphore.run();
+                            }
                         }
                     }
                 };
-                semaphoreStatusListener.onStatusChanged(command);
-                logger.info("new message received");
+                while(!command.equalsIgnoreCase("off"))
+                    semaphoreStatusListener.onStatusChanged(command);
+
+
 //topic.equals("tl/status") &&
 
             });

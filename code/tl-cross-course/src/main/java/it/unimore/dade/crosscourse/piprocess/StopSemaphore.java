@@ -4,7 +4,7 @@ import com.pi4j.io.gpio.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StopSemaphore {
+public class StopSemaphore extends Thread {
 
     protected SemaphoreStatusListener semaphoreStatusListener;
 
@@ -45,7 +45,7 @@ public class StopSemaphore {
         redLed.low();
     }
 
-    public static void stop() {
+    public void run() {
         //initPins();
         logger.info("Switching Off all pins");
         pinsOff();
