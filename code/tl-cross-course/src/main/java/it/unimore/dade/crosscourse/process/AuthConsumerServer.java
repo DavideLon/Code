@@ -26,7 +26,7 @@ public class AuthConsumerServer {
 
     private final static Logger logger = LoggerFactory.getLogger(AuthConsumerServer.class);
 
-    static Executor executor = Executors.newSingleThreadExecutor();
+    //static Executor executor = Executors.newSingleThreadExecutor();
 
     //IP Address of the target MQTT Broker
     private static String BROKER_ADDRESS = "192.168.1.145";
@@ -99,7 +99,7 @@ public class AuthConsumerServer {
                 ErrorStateSemaphore errorStateSemaphore = new ErrorStateSemaphore();
                 //errorStateSemaphore.start();
 */
-                executor.execute(startSemaphore);
+                //executor.execute(startSemaphore);
 
                 SemaphoreStatusListener semaphoreStatusListener = new SemaphoreStatusListener() {
                     @Override
@@ -110,20 +110,12 @@ public class AuthConsumerServer {
                                 startSemaphore.start();
                             }
                             else{
+                                logger.info("Telling to switch semaphore ON, after interrupting Blinking Error State");
                                 errorStateSemaphore.interrupt();
                                 startSemaphore.start();
                             }
                         }
                         else if(command.toLowerCase().equals("off")) {
-                            /*if ((startSemaphore==null || startSemaphore.isInterrupted())&&errorStateSemaphore==null || errorStateSemaphore,isInterrupted()) {
-                                logger.info("Telling to switch semaphore OFF");
-                                stopSemaphore.run();
-                            }
-                            else{
-                                startSemaphore.interrupt();
-                                stopSemaphore.run();
-                            }
-                             */
                             logger.info("Telling to switch semaphore OFF");
                             startSemaphore.interrupt();
                             errorStateSemaphore.interrupt();
@@ -135,18 +127,14 @@ public class AuthConsumerServer {
                                 stopSemaphore.start();
                             }
                             else{
+                                logger.info("Entering in blinking yellow error state, after interrupting Semaphore normal behaviour");
                                 startSemaphore.interrupt();
-                                stopSemaphore.start();
+                               stopSemaphore.start();
                             }
                         }
                     }
                 };
-                do {
-                    semaphoreStatusListener.onStatusChanged(command);
-                }while(!command.equalsIgnoreCase("off"));
-
-
-//topic.equals("tl/status") &&
+                semaphoreStatusListener.onStatusChanged(command);
 
             });
 
