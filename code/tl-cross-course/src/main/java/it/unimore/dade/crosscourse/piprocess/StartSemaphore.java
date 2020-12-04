@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 public class StartSemaphore implements Runnable {
 
@@ -23,6 +24,7 @@ public class StartSemaphore implements Runnable {
     private static final int LED_GREEN = 0;
     private static final int LED_YELLOW = 1;
     private static final int LED_RED = 2;
+    public boolean inited=false;
 
     public static int count = 0;
     public static int state = 0;
@@ -50,13 +52,15 @@ public class StartSemaphore implements Runnable {
     }
 
     public StartSemaphore() {
-        //initPins();
+        /*if(!isInited())
+            initPins();*/
         //this.semaphoreStatusListenerList = new ArrayList<>();
         //addDataListener(semaphoreStatusListener);
         //notifyUpdatedStatus("on");
     }
     public StartSemaphore(String message){
-        initPins();
+        /*if(!isInited())
+            initPins();*/
         this.msg= message;
     }
 /*
@@ -87,8 +91,8 @@ public class StartSemaphore implements Runnable {
         else
             logger.error("Empty list or Null Status Listener! Nothing to notify");
     }
-*/
-    public static void initPins(){
+*//*
+    public void initPins(){
         // provision gpio pins as output pins and make sure are set to LOW at startup
         greenLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN),   // PIN NUMBER
                 "My Green LED",           // PIN FRIENDLY NAME (optional)
@@ -102,8 +106,9 @@ public class StartSemaphore implements Runnable {
                 "My Red LED",           // PIN FRIENDLY NAME (optional)
                 PinState.LOW);      // PIN STARTUP STATE (optional)
         redLed.setShutdownOptions(true, PinState.LOW);
+        this.inited=true;
     }
-
+*/
     private static Integer startSemaphore() throws InterruptedException {
         switch (state){
             case LED_GREEN :
@@ -175,9 +180,13 @@ public class StartSemaphore implements Runnable {
     //mvn exec:java -Dexec.mainClass="<Your Main Class>"
     //mvn exec:java -Dexec.mainClass="it.unimore.dade.crosscourse.test.TrafficLightMSF"
 
+    public boolean isInited()
+    {
+        return this.inited;
+    }
+
     public void run() {
         //int countIterations=0;
-        initPins();
 
         logger.info("Starting TL, green on");
         greenLed.high();

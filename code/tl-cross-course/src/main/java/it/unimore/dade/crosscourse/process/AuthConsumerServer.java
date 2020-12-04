@@ -1,9 +1,6 @@
 package it.unimore.dade.crosscourse.process;
 
-import it.unimore.dade.crosscourse.piprocess.ErrorStateSemaphore;
-import it.unimore.dade.crosscourse.piprocess.SemaphoreStatusListener;
-import it.unimore.dade.crosscourse.piprocess.StartSemaphore;
-import it.unimore.dade.crosscourse.piprocess.StopSemaphore;
+import it.unimore.dade.crosscourse.piprocess.*;
 
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
@@ -46,6 +43,8 @@ public class AuthConsumerServer {
     private static final String ON = "on";
     private static final String OFF = "off";
     private static final String ERROR = "error";
+
+    public static boolean initedPins;
 
     public static void main(String [ ] args) {
 
@@ -111,6 +110,8 @@ public class AuthConsumerServer {
                     stopSemaphore.setName("stop");
                     Thread errorStateSemaphore = new Thread(errorRunnable);
                     errorStateSemaphore.setName("error");
+
+                    InitSemaphorePins initSemaphorePins = new InitSemaphorePins();
 
                     logger.debug("Am i here ---------3---------");
 

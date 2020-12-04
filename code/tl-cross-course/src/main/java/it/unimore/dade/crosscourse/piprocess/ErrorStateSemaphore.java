@@ -4,7 +4,7 @@ import com.pi4j.io.gpio.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ErrorStateSemaphore implements Runnable {
+public class ErrorStateSemaphore implements Semaphore {
 
     private final static Logger logger = LoggerFactory.getLogger(ErrorStateSemaphore.class);
 
@@ -41,7 +41,7 @@ public class ErrorStateSemaphore implements Runnable {
 
     public void run() {
         int countIterations=0;
-        initPin();
+        //initPin();
         try {
             while (countIterations < MAX_ITERATIONS) {
                 logger.info("Switching yellow value {}", yellowBlinking.getState());

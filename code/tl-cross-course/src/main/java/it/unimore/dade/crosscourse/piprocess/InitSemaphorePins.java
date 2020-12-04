@@ -1,14 +1,8 @@
 package it.unimore.dade.crosscourse.piprocess;
 
 import com.pi4j.io.gpio.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class StopSemaphore implements Runnable {
-
-    protected SemaphoreStatusListener semaphoreStatusListener;
-
-    private final static Logger logger = LoggerFactory.getLogger(StopSemaphore.class);
+public class InitSemaphorePins {
 
     private static final int LED_GREEN = 0;
     private static final int LED_YELLOW = 1;
@@ -19,11 +13,8 @@ public class StopSemaphore implements Runnable {
     private static GpioPinDigitalOutput yellowLed = null;
     private static GpioPinDigitalOutput redLed = null;
 
-    public StopSemaphore() {
-        //initPins();
-    }
+    public InitSemaphorePins() {
 
-    public static void initPins(){
         // provision gpio pins as output pins and make sure are set to LOW at startup
         greenLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN),   // PIN NUMBER
                 "My Green LED",           // PIN FRIENDLY NAME (optional)
@@ -36,24 +27,7 @@ public class StopSemaphore implements Runnable {
         redLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_RED),   // PIN NUMBER
                 "My Red LED",           // PIN FRIENDLY NAME (optional)
                 PinState.LOW);      // PIN STARTUP STATE (optional)
-        yellowLed.setShutdownOptions(true, PinState.LOW);
-    }
-
-    private static void pinsOff() {
-        greenLed.low();
-        yellowLed.low();
-        redLed.low();
-    }
-
-    public void run() {
-        try {
-            //initPins();
-            logger.info("Switching Off all pins");
-            pinsOff();
-        }catch (Exception e){
-            e.printStackTrace();
-            return;
-        }
+        redLed.setShutdownOptions(true, PinState.LOW);
     }
 
 }
