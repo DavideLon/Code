@@ -102,10 +102,14 @@ public class AuthConsumerServer {
                         //TODO insert switch case
 
                         logger.debug("Am i here ---------2---------");
-                        
-                        Thread startSemaphore = new Thread(new StartSemaphore());
-                        Thread stopSemaphore = new Thread(new StopSemaphore());
-                        Thread errorStateSemaphore = new Thread(new ErrorStateSemaphore());
+
+                        StartSemaphore startRunnable = new StartSemaphore();
+                        StopSemaphore stopRunnable = new StopSemaphore();
+                        ErrorStateSemaphore errorRunnable = new ErrorStateSemaphore();
+
+                        Thread startSemaphore = new Thread(startRunnable);
+                        Thread stopSemaphore = new Thread(stopRunnable);
+                        Thread errorStateSemaphore = new Thread(errorRunnable);
 
 
                         logger.debug("Am i here ---------3---------");
