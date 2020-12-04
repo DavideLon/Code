@@ -193,8 +193,8 @@ public class StartSemaphore implements Runnable {
 
     public void run() {
         //int countIterations=0;
-        if(yellowLed.isMode(PinMode.DIGITAL_OUTPUT)&&(greenLed.isMode(PinMode.DIGITAL_OUTPUT))&&redLed.isMode(PinMode.DIGITAL_OUTPUT)) {
-
+        //if(yellowLed.isMode(PinMode.DIGITAL_OUTPUT)&&(greenLed.isMode(PinMode.DIGITAL_OUTPUT))&&redLed.isMode(PinMode.DIGITAL_OUTPUT)) {
+            initPins();
             logger.info("Starting TL, green on");
             greenLed.high();
             try {
@@ -207,12 +207,12 @@ public class StartSemaphore implements Runnable {
             } catch (Exception e) {
                 e.printStackTrace();
                 return;
-            }
+        /*    }
         }
         else{
             initPins();
             run();
-       }
+       }*/}
     }
 
 }
