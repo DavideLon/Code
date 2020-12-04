@@ -43,6 +43,10 @@ public class AuthConsumerServer {
     //Basic Topic used to consume generated demo data (the topic is associated to the user)
     private static final String MQTT_BASIC_TOPIC = "/iot/user/000001/";
 
+    private static final String ON = "on";
+    private static final String OFF = "off";
+    private static final String ERROR = "error";
+
     public static void main(String [ ] args) {
 
     	logger.info("MQTT Auth Consumer Tester Started ...");
@@ -86,7 +90,7 @@ public class AuthConsumerServer {
                 //The msg variable is a MqttMessage object containing all the information about the received message
             	byte[] payload = msg.getPayload();
                 String command=new String(payload);
-                logger.info("Message Received ({}) Message Received: {}", topic, command);
+                logger.info("On topic : ({}) Message Received: ({})", topic, command);
 
                 //listener col command??
 
@@ -94,11 +98,12 @@ public class AuthConsumerServer {
                 Thread stopSemaphore = new Thread(new StopSemaphore());
                 Thread errorStateSemaphore = new Thread(new ErrorStateSemaphore());
 
+                startSemaphore.start();
                 //SemaphoreStatusListener semaphoreStatusListener = new SemaphoreStatusListener() {
                 //    @Override
                 //    public void onStatusChanged(String command) throws InterruptedException {
                         //TODO insert switch case
-                        if (command.toLowerCase().equals("on")) {
+                        if (command.toLowerCase().equals(ON)) {
                             logger.info("Telling to switch semaphore ON");
                             if (stopSemaphore.isAlive() && !stopSemaphore.isInterrupted())
                                 stopSemaphore.interrupt();
@@ -107,7 +112,7 @@ public class AuthConsumerServer {
                             logger.debug("DEBUG ON");
                             startSemaphore.start();
                         }
-                        else if(command.toLowerCase().equals("off")) {
+                        else if(command.toLowerCase().equals(OFF)) {
                             logger.info("Telling to switch semaphore OFF");
                             if (startSemaphore.isAlive() && !startSemaphore.isInterrupted())
                                 startSemaphore.interrupt();
