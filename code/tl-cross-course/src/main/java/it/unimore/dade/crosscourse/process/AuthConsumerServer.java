@@ -121,10 +121,10 @@ public class AuthConsumerServer {
                     logger.info("-----------------{}-----------------",startSemaphore.getState());
                     logger.info("-----------------{}-----------------",stopSemaphore.getState());
                     logger.info("-----------------{}-----------------",errorStateSemaphore.getState());
-                    if (stopSemaphore.isAlive() && !stopSemaphore.isInterrupted())
-                        stopSemaphore.wait(); //.interrupt();
-                    if(errorStateSemaphore.isAlive() && !errorStateSemaphore.isInterrupted())
-                        errorStateSemaphore.wait(); //.interrupt();
+                    if (stopSemaphore.isAlive())
+                        stopSemaphore.interrupt();
+                    if(errorStateSemaphore.isAlive())
+                        errorStateSemaphore.interrupt();
                     logger.debug("DEBUG ON");
                     startSemaphore.start();
                 }
@@ -133,9 +133,9 @@ public class AuthConsumerServer {
                     logger.info("-----------------{}-----------------",startSemaphore.getState());
                     logger.info("-----------------{}-----------------",stopSemaphore.getState());
                     logger.info("-----------------{}-----------------",errorStateSemaphore.getState());
-                    if (startSemaphore.isAlive() && !startSemaphore.isInterrupted())
+                    if (startSemaphore.isAlive())
                         startSemaphore.interrupt();
-                    if(errorStateSemaphore.isAlive() && !errorStateSemaphore.isInterrupted())
+                    if(errorStateSemaphore.isAlive())
                         errorStateSemaphore.interrupt();
                     logger.debug("DEBUG OFF");
                     stopSemaphore.start();
@@ -145,9 +145,9 @@ public class AuthConsumerServer {
                     logger.info("-----------------{}-----------------",startSemaphore.getState());
                     logger.info("-----------------{}-----------------",stopSemaphore.getState());
                     logger.info("-----------------{}-----------------",errorStateSemaphore.getState());
-                    if (startSemaphore.isAlive() && !startSemaphore.isInterrupted())
+                    if (startSemaphore.isAlive())
                         startSemaphore.interrupt();
-                    if(stopSemaphore.isAlive() && !stopSemaphore.isInterrupted())
+                    if(stopSemaphore.isAlive())
                         stopSemaphore.interrupt();
                     logger.debug("DEBUG ERROR");
                     errorStateSemaphore.start();

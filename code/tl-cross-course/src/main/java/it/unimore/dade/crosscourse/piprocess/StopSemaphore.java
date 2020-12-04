@@ -56,7 +56,7 @@ public class StopSemaphore implements Runnable {
         if(yellowLed.isMode(PinMode.DIGITAL_OUTPUT)&&(greenLed.isMode(PinMode.DIGITAL_OUTPUT))&&redLed.isMode(PinMode.DIGITAL_OUTPUT)) {
             try {
                 //initPins();
-                logger.info("Switching Off all pins");
+                logger.info("Switching ---> OFF all pins");
                 pinsOff();
             } catch (Exception e) {
                 e.printStackTrace();

@@ -50,7 +50,7 @@ public class ErrorStateSemaphore implements Semaphore {
 
             try {
                 while (true) {
-                    logger.info("Switching yellow value {}", yellowLed.getState());
+                    logger.info("Switching yellow ---> ON");
                     blink();
                     Thread.sleep(TIMEOUT_ERROR_MS);
                     //countIterations++;

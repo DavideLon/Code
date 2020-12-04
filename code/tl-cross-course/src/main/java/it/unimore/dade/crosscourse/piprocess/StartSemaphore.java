@@ -206,8 +206,8 @@ public class StartSemaphore implements Runnable {
          if (initSemaphorePins.isInited())
          {
 
-            logger.info("Starting TL, green on");
-            logger.info("led properties"+ greenLed.getProperties());
+            logger.info("Starting TL ---> Green ON");
+
             greenLed.high();
             try {
                 while (!shutdown) {
