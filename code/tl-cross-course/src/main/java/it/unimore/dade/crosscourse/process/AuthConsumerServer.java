@@ -55,6 +55,71 @@ public class AuthConsumerServer {
     private static GpioPinDigitalOutput redLed = null;
 
 
+    static InitSemaphorePins initSemaphorePins = new InitSemaphorePins();
+
+
+    static StartSemaphore startRunnable = new StartSemaphore(initSemaphorePins.getGpio(),
+            initSemaphorePins.getGreenLed(),
+            initSemaphorePins.getYellowLed(),
+            initSemaphorePins.getRedLed());
+    static StopSemaphore stopRunnable = new StopSemaphore(initSemaphorePins.getGpio(),
+            initSemaphorePins.getGreenLed(),
+            initSemaphorePins.getYellowLed(),
+            initSemaphorePins.getRedLed());
+    static ErrorStateSemaphore errorRunnable = new ErrorStateSemaphore(initSemaphorePins.getGpio(),
+            initSemaphorePins.getYellowLed());
+
+    static Thread startSemaphore = new Thread(startRunnable);
+
+    static Thread stopSemaphore = new Thread(stopRunnable);
+
+    static Thread errorStateSemaphore = new Thread(errorRunnable);
+
+
+
+    static SemaphoreStatusListener semaphoreStatusListener = command1 -> {
+        //TODO insert switch case
+
+        logger.debug("Am i here ---------2---------");
+        if (!startSemaphore.isAlive())
+            startSemaphore.setName("start");
+        if (!stopSemaphore.isAlive())
+            stopSemaphore.setName("stop");
+        if (!errorStateSemaphore.isAlive())
+            errorStateSemaphore.setName("error");
+
+        logger.debug("Am i here ---------3---------");
+
+        if (command1.toLowerCase().equals(ON)) {
+            logger.info("Telling RPI to switch semaphore ON");
+            if (stopSemaphore.isAlive() && !stopSemaphore.isInterrupted())
+                stopSemaphore.interrupt();
+            if(errorStateSemaphore.isAlive() && !errorStateSemaphore.isInterrupted())
+                errorStateSemaphore.interrupt();
+            logger.debug("DEBUG ON");
+            startSemaphore.start();
+        }
+        else if(command1.toLowerCase().equals(OFF)) {
+            logger.info("Telling RPI to switch semaphore OFF");
+            if (startSemaphore.isAlive() && !startSemaphore.isInterrupted())
+                startSemaphore.interrupt();
+            if(errorStateSemaphore.isAlive() && !errorStateSemaphore.isInterrupted())
+                errorStateSemaphore.interrupt();
+            logger.debug("DEBUG OFF");
+            stopSemaphore.start();
+        }
+        else {
+            logger.info("Telling RPI to go in blinking yellow error state");
+            if (startSemaphore.isAlive() && !startSemaphore.isInterrupted())
+                startSemaphore.interrupt();
+            if(stopSemaphore.isAlive() && !stopSemaphore.isInterrupted())
+                stopSemaphore.interrupt();
+            logger.debug("DEBUG ERROR");
+            errorStateSemaphore.start();
+        }
+    };
+
+
     public static void main(String [ ] args) {
 
     	logger.info("MQTT Auth Consumer Tester Started ...");
@@ -81,14 +146,17 @@ public class AuthConsumerServer {
             MqttConnectOptions options = new MqttConnectOptions();
             options.setUserName(MQTT_USERNAME);
             options.setPassword(new String(MQTT_PASSWORD).toCharArray());
-            options.setAutomaticReconnect(false);
-            options.setCleanSession(false);
+            options.setAutomaticReconnect(true);
+            options.setCleanSession(true);
             options.setConnectionTimeout(10);
 
             //Connect to the target broker
             client.connect(options);
 
             logger.info("Connected !");
+
+
+            initSemaphorePins.init();
 
             //Subscribe to the target topic #. In that case the consumer will receive (if authorized) all the message
             //passing through the broker
@@ -100,73 +168,12 @@ public class AuthConsumerServer {
                 String command=new String(payload);
                 logger.info("On topic : ({}) Message Received: ({})", topic, command);
 
-                InitSemaphorePins initSemaphorePins = new InitSemaphorePins();
 
-                initSemaphorePins.init();
+                semaphoreStatusListener.onStatusChanged(command);
 
-                //controlling if there are values
-                logger.debug("{}", initSemaphorePins.getGreenLed().getState());
-                logger.debug("{}", initSemaphorePins.getRedLed().getState());
-                logger.debug("{}", initSemaphorePins.getYellowLed().getState());
-                logger.debug("{}", initSemaphorePins.getGpio().getProvisionedPins());
-
-
-                StartSemaphore startRunnable = new StartSemaphore(initSemaphorePins.getGpio(),
-                        initSemaphorePins.getGreenLed(),
-                        initSemaphorePins.getYellowLed(),
-                        initSemaphorePins.getRedLed());
-                StopSemaphore stopRunnable = new StopSemaphore(initSemaphorePins.getGpio(),
-                        initSemaphorePins.getGreenLed(),
-                        initSemaphorePins.getYellowLed(),
-                        initSemaphorePins.getRedLed());
-                ErrorStateSemaphore errorRunnable = new ErrorStateSemaphore(initSemaphorePins.getGpio(),
-                        initSemaphorePins.getYellowLed());
 
                 logger.debug("Am i here ---------1---------");
 
-                SemaphoreStatusListener semaphoreStatusListener = command1 -> {
-                    //TODO insert switch case
-
-                    logger.debug("Am i here ---------2---------");
-
-                    Thread startSemaphore = new Thread(startRunnable);
-                    startSemaphore.setName("start");
-                    Thread stopSemaphore = new Thread(stopRunnable);
-                    stopSemaphore.setName("stop");
-                    Thread errorStateSemaphore = new Thread(errorRunnable);
-                    errorStateSemaphore.setName("error");
-
-                    logger.debug("Am i here ---------3---------");
-
-                    if (command1.toLowerCase().equals(ON)) {
-                        logger.info("Telling to switch semaphore ON");
-                        if (stopSemaphore.isAlive() && !stopSemaphore.isInterrupted())
-                            stopSemaphore.interrupt();
-                        if(errorStateSemaphore.isAlive() && !errorStateSemaphore.isInterrupted())
-                            errorStateSemaphore.interrupt();
-                        logger.debug("DEBUG ON");
-                        startSemaphore.start();
-                    }
-                    else if(command1.toLowerCase().equals(OFF)) {
-                        logger.info("Telling to switch semaphore OFF");
-                        if (startSemaphore.isAlive() && !startSemaphore.isInterrupted())
-                            startSemaphore.interrupt();
-                        if(errorStateSemaphore.isAlive() && !errorStateSemaphore.isInterrupted())
-                            errorStateSemaphore.interrupt();
-                        logger.debug("DEBUG OFF");
-                        stopSemaphore.start();
-                    }
-                    else {
-                        logger.info("Entering in blinking yellow error state");
-                        if (startSemaphore.isAlive() && !startSemaphore.isInterrupted())
-                            startSemaphore.interrupt();
-                        if(stopSemaphore.isAlive() && !stopSemaphore.isInterrupted())
-                            stopSemaphore.interrupt();
-                        logger.debug("DEBUG ERROR");
-                        errorStateSemaphore.start();
-                    }
-                };
-                semaphoreStatusListener.onStatusChanged(command);
 
             });
 

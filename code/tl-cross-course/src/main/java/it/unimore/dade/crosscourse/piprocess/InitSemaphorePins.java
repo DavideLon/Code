@@ -50,21 +50,15 @@ public class InitSemaphorePins {
                 PinState.LOW);      // PIN STARTUP STATE (optional)
         greenLed.setShutdownOptions(true, PinState.LOW);
 
-        logger.info("Led properties"+ greenLed.getProperties());
-
         yellowLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_YELLOW),   // PIN NUMBER
                 "My Yellow LED",           // PIN FRIENDLY NAME (optional)
                 PinState.LOW);      // PIN STARTUP STATE (optional)
         yellowLed.setShutdownOptions(true, PinState.LOW);
 
-        logger.info("Led properties"+ yellowLed.getProperties());
-
         redLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_RED),   // PIN NUMBER
                 "My Red LED",           // PIN FRIENDLY NAME (optional)
                 PinState.LOW);      // PIN STARTUP STATE (optional)
         redLed.setShutdownOptions(true, PinState.LOW);
-
-        logger.info("Led properties"+ redLed.getProperties());
 
         inited= true;
 

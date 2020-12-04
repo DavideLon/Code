@@ -113,7 +113,7 @@ public class AuthProducerClient {
         if (mqttClient.isConnected() && msgString != null && topic != null) {
         	
             MqttMessage msg = new MqttMessage(msgString.getBytes());
-            msg.setQos(2);
+            msg.setQos(1);
             msg.setRetained(false);
             mqttClient.publish(topic,msg);
             
