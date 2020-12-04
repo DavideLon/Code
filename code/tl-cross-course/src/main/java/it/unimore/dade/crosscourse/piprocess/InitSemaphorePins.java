@@ -16,6 +16,29 @@ public class InitSemaphorePins {
     static protected boolean inited= false;
 
     public InitSemaphorePins() {
+    }
+
+    public static GpioController getGpio() {
+        return gpio;
+    }
+
+    public static GpioPinDigitalOutput getGreenLed() {
+        return greenLed;
+    }
+
+    public static GpioPinDigitalOutput getYellowLed() {
+        return yellowLed;
+    }
+
+    public static GpioPinDigitalOutput getRedLed() {
+        return redLed;
+    }
+
+    public static boolean isInited() {
+        return inited;
+    }
+
+    public static void init() {
 
         // provision gpio pins as output pins and make sure are set to LOW at startup
         greenLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN),   // PIN NUMBER
@@ -31,6 +54,6 @@ public class InitSemaphorePins {
                 PinState.LOW);      // PIN STARTUP STATE (optional)
         redLed.setShutdownOptions(true, PinState.LOW);
         inited= true;
-    }
 
+    }
 }

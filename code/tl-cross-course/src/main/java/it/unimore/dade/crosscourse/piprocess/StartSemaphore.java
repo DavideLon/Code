@@ -36,19 +36,21 @@ public class StartSemaphore implements Runnable {
 
     private static int NUM_STATES = 3;
 
-    private static final int TIMEOUT_ON_MS = 10;
-/*
-    private static final GpioController gpio = InitSemaphorePins.gpio;
-    private static GpioPinDigitalOutput greenLed = InitSemaphorePins.greenLed;
-    private static GpioPinDigitalOutput yellowLed =InitSemaphorePins.yellowLed;
-    private static GpioPinDigitalOutput redLed = InitSemaphorePins.redLed;
+    public static InitSemaphorePins initSemaphorePins = new InitSemaphorePins();
 
-*/
+    private static final int TIMEOUT_ON_MS = 10;
+
+    private static final GpioController gpio = initSemaphorePins.getGpio();
+    private static GpioPinDigitalOutput greenLed = initSemaphorePins.getGreenLed();
+    private static GpioPinDigitalOutput yellowLed = initSemaphorePins.getYellowLed();
+    private static GpioPinDigitalOutput redLed = initSemaphorePins.getRedLed();
+/*
+
     private static final GpioController gpio = GpioFactory.getInstance();
     private static GpioPinDigitalOutput greenLed = null;
     private static GpioPinDigitalOutput yellowLed =null;
     private static GpioPinDigitalOutput redLed = null;
-
+*/
     private final static Logger logger = LoggerFactory.getLogger(StartSemaphore.class);
 
     //private static ArrayList<Integer[]> stateMatrix = new ArrayList<Integer[]>();
@@ -194,7 +196,9 @@ public class StartSemaphore implements Runnable {
     public void run() {
         //int countIterations=0;
         //if(yellowLed.isMode(PinMode.DIGITAL_OUTPUT)&&(greenLed.isMode(PinMode.DIGITAL_OUTPUT))&&redLed.isMode(PinMode.DIGITAL_OUTPUT)) {
-            initPins();
+         if (initSemaphorePins.isInited())
+         {
+
             logger.info("Starting TL, green on");
             greenLed.high();
             try {
@@ -207,12 +211,12 @@ public class StartSemaphore implements Runnable {
             } catch (Exception e) {
                 e.printStackTrace();
                 return;
-        /*    }
+            }
         }
         else{
-            initPins();
+            initSemaphorePins.init();
             run();
-       }*/}
+       }
     }
 
 }
