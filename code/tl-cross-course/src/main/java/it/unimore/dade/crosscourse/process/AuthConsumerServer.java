@@ -124,6 +124,12 @@ public class AuthConsumerServer {
 
                     initSemaphorePins.init();
 
+                    logger.debug("{}", initSemaphorePins.getGreenLed().getState());
+                    logger.debug("{}", initSemaphorePins.getRedLed().getState());
+                    logger.debug("{}", initSemaphorePins.getYellowLed().getState());
+                    logger.debug("{}", initSemaphorePins.getGpio().getProvisionedPins());
+
+
                     logger.debug("Am i here ---------3---------");
 
                     if (command1.toLowerCase().equals(ON)) {

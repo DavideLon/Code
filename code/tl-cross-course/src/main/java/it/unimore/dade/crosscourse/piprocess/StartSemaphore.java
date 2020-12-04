@@ -1,6 +1,7 @@
 package it.unimore.dade.crosscourse.piprocess;
 
 import com.pi4j.io.gpio.*;
+import com.pi4j.wiringpi.Gpio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,7 @@ public class StartSemaphore implements Runnable {
 
     private static final int TIMEOUT_ON_MS = 10;
 
-    private static final GpioController gpio = initSemaphorePins.getGpio();
+    private static final GpioController gpio = GpioFactory.getInstance();
     private static GpioPinDigitalOutput greenLed = initSemaphorePins.getGreenLed();
     private static GpioPinDigitalOutput yellowLed = initSemaphorePins.getYellowLed();
     private static GpioPinDigitalOutput redLed = initSemaphorePins.getRedLed();
@@ -200,7 +201,7 @@ public class StartSemaphore implements Runnable {
          {
 
             logger.info("Starting TL, green on");
-            logger.info("led mode "+(greenLed.getMode())+"properties"+ greenLed.getProperties());
+            logger.info("led properties"+ greenLed.getProperties());
             greenLed.high();
             try {
                 while (!shutdown) {
