@@ -93,54 +93,53 @@ public class AuthConsumerServer {
                 logger.info("On topic : ({}) Message Received: ({})", topic, command);
 
                 //listener col command??
-                
+
+                StartSemaphore startRunnable = new StartSemaphore();
+                StopSemaphore stopRunnable = new StopSemaphore();
+                ErrorStateSemaphore errorRunnable = new ErrorStateSemaphore();
+
                 logger.debug("Am i here ---------1---------");
 
-                SemaphoreStatusListener semaphoreStatusListener = new SemaphoreStatusListener() {
-                    @Override
-                    public void onStatusChanged(String command) throws InterruptedException {
-                        //TODO insert switch case
+                SemaphoreStatusListener semaphoreStatusListener = command1 -> {
+                    //TODO insert switch case
 
-                        logger.debug("Am i here ---------2---------");
+                    logger.debug("Am i here ---------2---------");
 
-                        StartSemaphore startRunnable = new StartSemaphore();
-                        StopSemaphore stopRunnable = new StopSemaphore();
-                        ErrorStateSemaphore errorRunnable = new ErrorStateSemaphore();
+                    Thread startSemaphore = new Thread(startRunnable);
+                    startSemaphore.setName("start");
+                    Thread stopSemaphore = new Thread(stopRunnable);
+                    stopSemaphore.setName("stop");
+                    Thread errorStateSemaphore = new Thread(errorRunnable);
+                    errorStateSemaphore.setName("error");
 
-                        Thread startSemaphore = new Thread(startRunnable);
-                        Thread stopSemaphore = new Thread(stopRunnable);
-                        Thread errorStateSemaphore = new Thread(errorRunnable);
+                    logger.debug("Am i here ---------3---------");
 
-
-                        logger.debug("Am i here ---------3---------");
-
-                        if (command.toLowerCase().equals(ON)) {
-                            logger.info("Telling to switch semaphore ON");
-                            if (stopSemaphore.isAlive() && !stopSemaphore.isInterrupted())
-                                stopSemaphore.interrupt();
-                            if(errorStateSemaphore.isAlive() && !errorStateSemaphore.isInterrupted())
-                                errorStateSemaphore.interrupt();
-                            logger.debug("DEBUG ON");
-                            startSemaphore.start();
-                        }
-                        else if(command.toLowerCase().equals(OFF)) {
-                            logger.info("Telling to switch semaphore OFF");
-                            if (startSemaphore.isAlive() && !startSemaphore.isInterrupted())
-                                startSemaphore.interrupt();
-                            if(errorStateSemaphore.isAlive() && !errorStateSemaphore.isInterrupted())
-                                errorStateSemaphore.interrupt();
-                            logger.debug("DEBUG OFF");
-                            stopSemaphore.start();
-                        }
-                        else {
-                            logger.info("Entering in blinking yellow error state");
-                            if (startSemaphore.isAlive() && !startSemaphore.isInterrupted())
-                                startSemaphore.interrupt();
-                            if(stopSemaphore.isAlive() && !stopSemaphore.isInterrupted())
-                                stopSemaphore.interrupt();
-                            logger.debug("DEBUG ERROR");
-                            errorStateSemaphore.start();
-                        }
+                    if (command1.toLowerCase().equals(ON)) {
+                        logger.info("Telling to switch semaphore ON");
+                        if (stopSemaphore.isAlive() && !stopSemaphore.isInterrupted())
+                            stopSemaphore.interrupt();
+                        if(errorStateSemaphore.isAlive() && !errorStateSemaphore.isInterrupted())
+                            errorStateSemaphore.interrupt();
+                        logger.debug("DEBUG ON");
+                        startSemaphore.start();
+                    }
+                    else if(command1.toLowerCase().equals(OFF)) {
+                        logger.info("Telling to switch semaphore OFF");
+                        if (startSemaphore.isAlive() && !startSemaphore.isInterrupted())
+                            startSemaphore.interrupt();
+                        if(errorStateSemaphore.isAlive() && !errorStateSemaphore.isInterrupted())
+                            errorStateSemaphore.interrupt();
+                        logger.debug("DEBUG OFF");
+                        stopSemaphore.start();
+                    }
+                    else {
+                        logger.info("Entering in blinking yellow error state");
+                        if (startSemaphore.isAlive() && !startSemaphore.isInterrupted())
+                            startSemaphore.interrupt();
+                        if(stopSemaphore.isAlive() && !stopSemaphore.isInterrupted())
+                            stopSemaphore.interrupt();
+                        logger.debug("DEBUG ERROR");
+                        errorStateSemaphore.start();
                     }
                 };
                 semaphoreStatusListener.onStatusChanged(command);

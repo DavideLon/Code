@@ -21,7 +21,7 @@ public class ErrorStateSemaphore implements Runnable {
     private static GpioPinDigitalOutput yellowBlinking=null;
 
     public ErrorStateSemaphore() {
-        initPin();
+        //initPin();
     }
 
     private static void initPin() {
@@ -41,7 +41,7 @@ public class ErrorStateSemaphore implements Runnable {
 
     public void run() {
         int countIterations=0;
-        //initPin();
+        initPin();
         try {
             while (countIterations < MAX_ITERATIONS) {
                 logger.info("Switching yellow value {}", yellowBlinking.getState());

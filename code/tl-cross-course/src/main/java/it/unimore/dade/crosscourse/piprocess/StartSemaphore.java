@@ -50,7 +50,7 @@ public class StartSemaphore implements Runnable {
     }
 
     public StartSemaphore() {
-        initPins();
+        //initPins();
         //this.semaphoreStatusListenerList = new ArrayList<>();
         //addDataListener(semaphoreStatusListener);
         //notifyUpdatedStatus("on");
@@ -177,13 +177,13 @@ public class StartSemaphore implements Runnable {
 
     public void run() {
         //int countIterations=0;
-        //initPins();
+        initPins();
 
         logger.info("Starting TL, green on");
         greenLed.high();
         try {
             while (!shutdown) {
-                semaphoreStatusListener.onStatusChanged(msg);
+                //semaphoreStatusListener.onStatusChanged(msg);
                 state = startSemaphore();
                 switchLed();
                 //countIterations ++;

@@ -20,7 +20,7 @@ public class StopSemaphore implements Runnable {
     private static GpioPinDigitalOutput redLed = null;
 
     public StopSemaphore() {
-        initPins();
+        //initPins();
     }
 
     public static void initPins(){
@@ -47,7 +47,7 @@ public class StopSemaphore implements Runnable {
 
     public void run() {
         try {
-            //initPins();
+            initPins();
             logger.info("Switching Off all pins");
             pinsOff();
         }catch (Exception e){
