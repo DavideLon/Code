@@ -9,7 +9,14 @@ import java.util.List;
 
 public class StartSemaphore implements Runnable {
 
-    protected List<SemaphoreStatusListener> semaphoreStatusListenerList;
+    protected SemaphoreStatusListener semaphoreStatusListener = new SemaphoreStatusListener() {
+        @Override
+        public void onStatusChanged(String updatedStatus) throws InterruptedException {
+            shutdown();
+        }
+    };
+
+    public String msg= null;
 
     volatile boolean shutdown = false;
 
@@ -48,7 +55,11 @@ public class StartSemaphore implements Runnable {
         //addDataListener(semaphoreStatusListener);
         //notifyUpdatedStatus("on");
     }
-
+    public StartSemaphore(String message){
+        initPins();
+        this.msg= message;
+    }
+/*
     public void addDataListener(SemaphoreStatusListener semaphoreStatusListener) {
         if(this.semaphoreStatusListenerList!= null)
             this.semaphoreStatusListenerList.add(semaphoreStatusListener);
@@ -76,7 +87,7 @@ public class StartSemaphore implements Runnable {
         else
             logger.error("Empty list or Null Status Listener! Nothing to notify");
     }
-
+*/
     public static void initPins(){
         // provision gpio pins as output pins and make sure are set to LOW at startup
         greenLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN),   // PIN NUMBER
@@ -172,12 +183,14 @@ public class StartSemaphore implements Runnable {
         greenLed.high();
         try {
             while (!shutdown) {
+                semaphoreStatusListener.onStatusChanged(msg);
                 state = startSemaphore();
                 switchLed();
                 //countIterations ++;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return;
         }
     }
 

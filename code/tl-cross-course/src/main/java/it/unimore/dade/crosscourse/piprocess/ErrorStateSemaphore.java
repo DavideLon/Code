@@ -51,6 +51,7 @@ public class ErrorStateSemaphore implements Runnable {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return;
         }
     }
 }

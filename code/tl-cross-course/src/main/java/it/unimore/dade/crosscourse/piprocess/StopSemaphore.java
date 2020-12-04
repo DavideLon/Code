@@ -46,9 +46,14 @@ public class StopSemaphore implements Runnable {
     }
 
     public void run() {
-        //initPins();
-        logger.info("Switching Off all pins");
-        pinsOff();
+        try {
+            //initPins();
+            logger.info("Switching Off all pins");
+            pinsOff();
+        }catch (Exception e){
+            e.printStackTrace();
+            return;
+        }
     }
 
 }

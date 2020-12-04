@@ -88,53 +88,43 @@ public class AuthConsumerServer {
                 String command=new String(payload);
                 logger.info("Message Received ({}) Message Received: {}", topic, command);
 
+                //listener col command??
+
                 Thread startSemaphore = new Thread(new StartSemaphore());
                 Thread stopSemaphore = new Thread(new StopSemaphore());
                 Thread errorStateSemaphore = new Thread(new ErrorStateSemaphore());
-                /*
-                StartSemaphore startSemaphore = new StartSemaphore();
-                //startSemaphore.start();
-                StopSemaphore stopSemaphore = new StopSemaphore();
-                //stopSemaphore.start();
-                ErrorStateSemaphore errorStateSemaphore = new ErrorStateSemaphore();
-                //errorStateSemaphore.start();
-*/
-                //executor.execute(startSemaphore);
 
-                SemaphoreStatusListener semaphoreStatusListener = new SemaphoreStatusListener() {
-                    @Override
-                    public void onStatusChanged(String command) throws InterruptedException {
+                //SemaphoreStatusListener semaphoreStatusListener = new SemaphoreStatusListener() {
+                //    @Override
+                //    public void onStatusChanged(String command) throws InterruptedException {
+                        //TODO insert switch case
                         if (command.toLowerCase().equals("on")) {
-                            if (errorStateSemaphore==null || errorStateSemaphore.isInterrupted()) {
-                                logger.info("Telling to switch semaphore ON");
-                                startSemaphore.start();
-                            }
-                            else{
-                                logger.info("Telling to switch semaphore ON, after interrupting Blinking Error State");
+                            logger.info("Telling to switch semaphore ON");
+                            if (stopSemaphore.isAlive() && !stopSemaphore.isInterrupted())
+                                stopSemaphore.interrupt();
+                            if(errorStateSemaphore.isAlive() && !errorStateSemaphore.isInterrupted())
                                 errorStateSemaphore.interrupt();
-                                startSemaphore.start();
-                            }
+                            startSemaphore.start();
                         }
                         else if(command.toLowerCase().equals("off")) {
                             logger.info("Telling to switch semaphore OFF");
-                            startSemaphore.interrupt();
-                            errorStateSemaphore.interrupt();
+                            if (startSemaphore.isAlive() && !startSemaphore.isInterrupted())
+                                startSemaphore.interrupt();
+                            if(errorStateSemaphore.isAlive() && !errorStateSemaphore.isInterrupted())
+                                errorStateSemaphore.interrupt();
                             stopSemaphore.start();
                         }
                         else {
-                            if ((startSemaphore==null || startSemaphore.isInterrupted())) {
-                                logger.info("Entering in blinking yellow error state");
-                                stopSemaphore.start();
-                            }
-                            else{
-                                logger.info("Entering in blinking yellow error state, after interrupting Semaphore normal behaviour");
+                            logger.info("Entering in blinking yellow error state");
+                            if (startSemaphore.isAlive() && !startSemaphore.isInterrupted())
                                 startSemaphore.interrupt();
-                               stopSemaphore.start();
-                            }
+                            if(stopSemaphore.isAlive() && !stopSemaphore.isInterrupted())
+                                stopSemaphore.interrupt();
+                            errorStateSemaphore.start();
                         }
-                    }
-                };
-                semaphoreStatusListener.onStatusChanged(command);
+                //    }
+                //};
+                //semaphoreStatusListener.onStatusChanged(command);
 
             });
 
