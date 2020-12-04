@@ -156,8 +156,8 @@ public class AuthConsumerServer {
                         stopSemaphore.wait();
                     if (errorStateSemaphore.isAlive()){
                         logger.debug("DEBUG ON");
-                        errorStateSemaphore.wait();
-                        errorStateSemaphore.notify();
+                        startSemaphore.wait();
+                        startSemaphore.notify();
                     }
                     logger.debug("DEBUG ERROR");
                     errorStateSemaphore.start();
