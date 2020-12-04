@@ -8,10 +8,12 @@ public class InitSemaphorePins {
     private static final int LED_YELLOW = 1;
     private static final int LED_RED = 2;
 
-    private static final GpioController gpio = GpioFactory.getInstance();
-    private static GpioPinDigitalOutput greenLed = null;
-    private static GpioPinDigitalOutput yellowLed = null;
-    private static GpioPinDigitalOutput redLed = null;
+    public static final GpioController gpio = GpioFactory.getInstance();
+    static protected GpioPinDigitalOutput greenLed = null;
+    protected static GpioPinDigitalOutput yellowLed = null;
+    protected static GpioPinDigitalOutput redLed = null;
+
+    static protected boolean inited= false;
 
     public InitSemaphorePins() {
 
@@ -28,6 +30,7 @@ public class InitSemaphorePins {
                 "My Red LED",           // PIN FRIENDLY NAME (optional)
                 PinState.LOW);      // PIN STARTUP STATE (optional)
         redLed.setShutdownOptions(true, PinState.LOW);
+        inited= true;
     }
 
 }

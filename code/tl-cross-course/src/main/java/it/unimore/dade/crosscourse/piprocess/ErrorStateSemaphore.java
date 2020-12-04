@@ -16,9 +16,10 @@ public class ErrorStateSemaphore implements Semaphore {
 
     private static final int TIMEOUT_ERROR_MS = 500;
 
-    private static final GpioController gpio = GpioFactory.getInstance();
+    private static final GpioController gpio = InitSemaphorePins.gpio;
 
-    private static GpioPinDigitalOutput yellowBlinking=null;
+    private static GpioPinDigitalOutput yellowLed = InitSemaphorePins.yellowLed;
+
 
     public ErrorStateSemaphore() {
         //initPin();
@@ -26,32 +27,39 @@ public class ErrorStateSemaphore implements Semaphore {
 
     private static void initPin() {
 
-        yellowBlinking = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_YELLOW),
+        yellowLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_YELLOW),
                 "Blinking yellow error state",PinState.LOW);
-        yellowBlinking.setShutdownOptions(true, PinState.LOW);
+        yellowLed.setShutdownOptions(true, PinState.LOW);
     }
 
     private static void blink(){
-        if (yellowBlinking.isHigh()) {
-            yellowBlinking.low();
+        if (yellowLed.isHigh()) {
+            yellowLed.low();
         } else {
-            yellowBlinking.high();
+            yellowLed.high();
         }
     }
 
     public void run() {
-        int countIterations=0;
+        //int countIterations=0;
         //initPin();
-        try {
-            while (countIterations < MAX_ITERATIONS) {
-                logger.info("Switching yellow value {}", yellowBlinking.getState());
-                blink();
-                Thread.sleep(TIMEOUT_ERROR_MS);
-                countIterations++;
+        if(yellowLed.isMode(PinMode.DIGITAL_OUTPUT)) {
+
+            try {
+                while (true) {
+                    logger.info("Switching yellow value {}", yellowLed.getState());
+                    blink();
+                    Thread.sleep(TIMEOUT_ERROR_MS);
+                    //countIterations++;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
+        }
+        else{
+            initPin();
+            run();
         }
     }
 }

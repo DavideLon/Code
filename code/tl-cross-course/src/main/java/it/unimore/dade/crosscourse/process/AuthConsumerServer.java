@@ -1,5 +1,8 @@
 package it.unimore.dade.crosscourse.process;
 
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioFactory;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import it.unimore.dade.crosscourse.piprocess.*;
 
 import org.eclipse.paho.client.mqttv3.*;
@@ -45,6 +48,12 @@ public class AuthConsumerServer {
     private static final String ERROR = "error";
 
     public static boolean initedPins;
+
+    private static final GpioController gpio = null;
+    private static GpioPinDigitalOutput greenLed = null;
+    private static GpioPinDigitalOutput yellowLed = null;
+    private static GpioPinDigitalOutput redLed = null;
+
 
     public static void main(String [ ] args) {
 

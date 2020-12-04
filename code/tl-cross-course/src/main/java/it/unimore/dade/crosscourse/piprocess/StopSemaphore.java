@@ -14,10 +14,10 @@ public class StopSemaphore implements Runnable {
     private static final int LED_YELLOW = 1;
     private static final int LED_RED = 2;
 
-    private static final GpioController gpio = GpioFactory.getInstance();
-    private static GpioPinDigitalOutput greenLed = null;
-    private static GpioPinDigitalOutput yellowLed = null;
-    private static GpioPinDigitalOutput redLed = null;
+    private static final GpioController gpio = InitSemaphorePins.gpio;
+    private static GpioPinDigitalOutput greenLed = InitSemaphorePins.greenLed;
+    private static GpioPinDigitalOutput yellowLed =InitSemaphorePins.yellowLed;
+    private static GpioPinDigitalOutput redLed = InitSemaphorePins.redLed;
 
     public StopSemaphore() {
         //initPins();
@@ -46,13 +46,19 @@ public class StopSemaphore implements Runnable {
     }
 
     public void run() {
-        try {
-            //initPins();
-            logger.info("Switching Off all pins");
-            pinsOff();
-        }catch (Exception e){
-            e.printStackTrace();
-            return;
+        if(yellowLed.isMode(PinMode.DIGITAL_OUTPUT)&&(greenLed.isMode(PinMode.DIGITAL_OUTPUT))&&redLed.isMode(PinMode.DIGITAL_OUTPUT)) {
+            try {
+                //initPins();
+                logger.info("Switching Off all pins");
+                pinsOff();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+        else{
+            initPins();
+            run();
         }
     }
 

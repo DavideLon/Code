@@ -38,10 +38,10 @@ public class StartSemaphore implements Runnable {
 
     private static final int TIMEOUT_ON_MS = 10;
 
-    private static final GpioController gpio = GpioFactory.getInstance();
-    private static GpioPinDigitalOutput greenLed = null;
-    private static GpioPinDigitalOutput yellowLed = null;
-    private static GpioPinDigitalOutput redLed = null;
+    private static final GpioController gpio = InitSemaphorePins.gpio;
+    private static GpioPinDigitalOutput greenLed = InitSemaphorePins.greenLed;
+    private static GpioPinDigitalOutput yellowLed =InitSemaphorePins.yellowLed;
+    private static GpioPinDigitalOutput redLed = InitSemaphorePins.redLed;
 
     private final static Logger logger = LoggerFactory.getLogger(StartSemaphore.class);
 
@@ -91,7 +91,7 @@ public class StartSemaphore implements Runnable {
         else
             logger.error("Empty list or Null Status Listener! Nothing to notify");
     }
-*//*
+*/
     public void initPins(){
         // provision gpio pins as output pins and make sure are set to LOW at startup
         greenLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN),   // PIN NUMBER
@@ -108,7 +108,7 @@ public class StartSemaphore implements Runnable {
         redLed.setShutdownOptions(true, PinState.LOW);
         this.inited=true;
     }
-*/
+
     private static Integer startSemaphore() throws InterruptedException {
         switch (state){
             case LED_GREEN :
@@ -187,20 +187,26 @@ public class StartSemaphore implements Runnable {
 
     public void run() {
         //int countIterations=0;
+        if(yellowLed.isMode(PinMode.DIGITAL_OUTPUT)&&(greenLed.isMode(PinMode.DIGITAL_OUTPUT))&&redLed.isMode(PinMode.DIGITAL_OUTPUT)) {
 
-        logger.info("Starting TL, green on");
-        greenLed.high();
-        try {
-            while (!shutdown) {
-                //semaphoreStatusListener.onStatusChanged(msg);
-                state = startSemaphore();
-                switchLed();
-                //countIterations ++;
+            logger.info("Starting TL, green on");
+            greenLed.high();
+            try {
+                while (!shutdown) {
+                    //semaphoreStatusListener.onStatusChanged(msg);
+                    state = startSemaphore();
+                    switchLed();
+                    //countIterations ++;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
         }
+        else{
+            initPins();
+            run();
+       }
     }
 
 }
