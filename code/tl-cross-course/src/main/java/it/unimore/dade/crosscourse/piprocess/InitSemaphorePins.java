@@ -1,8 +1,12 @@
 package it.unimore.dade.crosscourse.piprocess;
 
 import com.pi4j.io.gpio.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InitSemaphorePins {
+
+    private final static Logger logger = LoggerFactory.getLogger(InitSemaphorePins.class);
 
     private static final int LED_GREEN = 0;
     private static final int LED_YELLOW = 1;
@@ -45,6 +49,7 @@ public class InitSemaphorePins {
                 "My Green LED",           // PIN FRIENDLY NAME (optional)
                 PinState.LOW);      // PIN STARTUP STATE (optional)
         greenLed.setShutdownOptions(true, PinState.LOW);
+        logger.info("Led properties"+ greenLed.getProperties());
         yellowLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_YELLOW),   // PIN NUMBER
                 "My Yellow LED",           // PIN FRIENDLY NAME (optional)
                 PinState.LOW);      // PIN STARTUP STATE (optional)

@@ -200,6 +200,7 @@ public class StartSemaphore implements Runnable {
          {
 
             logger.info("Starting TL, green on");
+            logger.info("led mode "+(greenLed.getMode())+"properties"+ greenLed.getProperties());
             greenLed.high();
             try {
                 while (!shutdown) {
