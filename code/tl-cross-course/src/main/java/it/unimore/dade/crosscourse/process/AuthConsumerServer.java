@@ -106,7 +106,6 @@ public class AuthConsumerServer {
             SemaphoreStatusListener semaphoreStatusListener = command1 -> {
                 //TODO insert switch case
 
-                logger.debug("Am i here ---------2---------");
                 if (!startSemaphore.isAlive())
                     startSemaphore.setName("Start Thread");
                 if (!stopSemaphore.isAlive())
@@ -114,19 +113,25 @@ public class AuthConsumerServer {
                 if (!errorStateSemaphore.isAlive())
                     errorStateSemaphore.setName("Error Thread");
 
-                logger.debug("Am i here ---------3---------");
-
                 if (command1.toLowerCase().equals(ON)) {
                     logger.info("Telling RPI to switch semaphore ON");
-                    logger.info("-----------------{}-----------------",startSemaphore.getState());
-                    logger.info("-----------------{}-----------------",stopSemaphore.getState());
-                    logger.info("-----------------{}-----------------",errorStateSemaphore.getState());
-                    if (stopSemaphore.isAlive())
-                        stopSemaphore.interrupt();
-                    if(errorStateSemaphore.isAlive())
-                        errorStateSemaphore.interrupt();
-                    logger.debug("DEBUG ON");
+                    logger.info("-----------------{}-----------------", startSemaphore.getState());
+                    logger.info("-----------------{}-----------------", stopSemaphore.getState());
+                    logger.info("-----------------{}-----------------", errorStateSemaphore.getState());
+
+                    if (stopSemaphore.isAlive()) {
+                        stopSemaphore.wait();
+                    }
+                    if (errorStateSemaphore.isAlive()) {
+                        errorStateSemaphore.wait();
+                    }
+                    if (startSemaphore.isAlive()){
+                        logger.debug("DEBUG ON");
+                        startSemaphore.wait();
+                        startSemaphore.notify();
+                    }
                     startSemaphore.start();
+
                 }
                 else if(command1.toLowerCase().equals(OFF)) {
                     logger.info("Telling RPI to switch semaphore OFF");
@@ -134,9 +139,9 @@ public class AuthConsumerServer {
                     logger.info("-----------------{}-----------------",stopSemaphore.getState());
                     logger.info("-----------------{}-----------------",errorStateSemaphore.getState());
                     if (startSemaphore.isAlive())
-                        startSemaphore.interrupt();
+                        startSemaphore.wait();
                     if(errorStateSemaphore.isAlive())
-                        errorStateSemaphore.interrupt();
+                        errorStateSemaphore.wait();
                     logger.debug("DEBUG OFF");
                     stopSemaphore.start();
                 }
@@ -146,9 +151,14 @@ public class AuthConsumerServer {
                     logger.info("-----------------{}-----------------",stopSemaphore.getState());
                     logger.info("-----------------{}-----------------",errorStateSemaphore.getState());
                     if (startSemaphore.isAlive())
-                        startSemaphore.interrupt();
+                        startSemaphore.wait();
                     if(stopSemaphore.isAlive())
-                        stopSemaphore.interrupt();
+                        stopSemaphore.wait();
+                    if (errorStateSemaphore.isAlive()){
+                        logger.debug("DEBUG ON");
+                        errorStateSemaphore.wait();
+                        errorStateSemaphore.notify();
+                    }
                     logger.debug("DEBUG ERROR");
                     errorStateSemaphore.start();
                 }
@@ -163,8 +173,6 @@ public class AuthConsumerServer {
             	byte[] payload = msg.getPayload();
                 String command=new String(payload);
                 logger.info("On topic : ({}) Message Received: ({})", topic, command);
-
-                logger.debug("Am i here ---------1---------");
 
                 semaphoreStatusListener.onStatusChanged(command);
 

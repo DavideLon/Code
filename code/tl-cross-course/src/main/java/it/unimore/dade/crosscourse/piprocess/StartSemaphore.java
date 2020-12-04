@@ -215,6 +215,8 @@ public class StartSemaphore implements Runnable {
                     state = startSemaphore();
                     switchLed();
                     //countIterations ++;
+                    if(Thread.interrupted())
+                        return;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
