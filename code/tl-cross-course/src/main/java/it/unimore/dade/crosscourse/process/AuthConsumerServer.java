@@ -100,11 +100,27 @@ public class AuthConsumerServer {
                 String command=new String(payload);
                 logger.info("On topic : ({}) Message Received: ({})", topic, command);
 
-                //listener col command??
+                InitSemaphorePins initSemaphorePins = new InitSemaphorePins();
 
-                StartSemaphore startRunnable = new StartSemaphore();
-                StopSemaphore stopRunnable = new StopSemaphore();
-                ErrorStateSemaphore errorRunnable = new ErrorStateSemaphore();
+                initSemaphorePins.init();
+
+                //controlling if there are values
+                logger.debug("{}", initSemaphorePins.getGreenLed().getState());
+                logger.debug("{}", initSemaphorePins.getRedLed().getState());
+                logger.debug("{}", initSemaphorePins.getYellowLed().getState());
+                logger.debug("{}", initSemaphorePins.getGpio().getProvisionedPins());
+
+
+                StartSemaphore startRunnable = new StartSemaphore(initSemaphorePins.getGpio(),
+                        initSemaphorePins.getGreenLed(),
+                        initSemaphorePins.getYellowLed(),
+                        initSemaphorePins.getRedLed());
+                StopSemaphore stopRunnable = new StopSemaphore(initSemaphorePins.getGpio(),
+                        initSemaphorePins.getGreenLed(),
+                        initSemaphorePins.getYellowLed(),
+                        initSemaphorePins.getRedLed());
+                ErrorStateSemaphore errorRunnable = new ErrorStateSemaphore(initSemaphorePins.getGpio(),
+                        initSemaphorePins.getYellowLed());
 
                 logger.debug("Am i here ---------1---------");
 
@@ -119,16 +135,6 @@ public class AuthConsumerServer {
                     stopSemaphore.setName("stop");
                     Thread errorStateSemaphore = new Thread(errorRunnable);
                     errorStateSemaphore.setName("error");
-
-                    InitSemaphorePins initSemaphorePins = new InitSemaphorePins();
-
-                    initSemaphorePins.init();
-
-                    logger.debug("{}", initSemaphorePins.getGreenLed().getState());
-                    logger.debug("{}", initSemaphorePins.getRedLed().getState());
-                    logger.debug("{}", initSemaphorePins.getYellowLed().getState());
-                    logger.debug("{}", initSemaphorePins.getGpio().getProvisionedPins());
-
 
                     logger.debug("Am i here ---------3---------");
 

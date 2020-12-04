@@ -41,10 +41,10 @@ public class StartSemaphore implements Runnable {
 
     private static final int TIMEOUT_ON_MS = 10;
 
-    private static final GpioController gpio = GpioFactory.getInstance();
-    private static GpioPinDigitalOutput greenLed = initSemaphorePins.getGreenLed();
-    private static GpioPinDigitalOutput yellowLed = initSemaphorePins.getYellowLed();
-    private static GpioPinDigitalOutput redLed = initSemaphorePins.getRedLed();
+    private static GpioController gpio = null;
+    private static GpioPinDigitalOutput greenLed = null;
+    private static GpioPinDigitalOutput yellowLed = null;
+    private static GpioPinDigitalOutput redLed = null;
 /*
 
     private static final GpioController gpio = GpioFactory.getInstance();
@@ -60,7 +60,13 @@ public class StartSemaphore implements Runnable {
         shutdown=!shutdown;
     }
 
-    public StartSemaphore() {
+    public StartSemaphore( GpioController externalGpio, GpioPinDigitalOutput green,  GpioPinDigitalOutput yellow,  GpioPinDigitalOutput red) {
+
+        gpio= externalGpio;
+        greenLed=green;
+        yellowLed= yellow;
+        redLed= red;
+
         /*if(!isInited())
             initPins();*/
         //this.semaphoreStatusListenerList = new ArrayList<>();

@@ -14,12 +14,19 @@ public class StopSemaphore implements Runnable {
     private static final int LED_YELLOW = 1;
     private static final int LED_RED = 2;
 
-    private static final GpioController gpio = InitSemaphorePins.gpio;
+    private static GpioController gpio = InitSemaphorePins.gpio;
     private static GpioPinDigitalOutput greenLed = InitSemaphorePins.greenLed;
     private static GpioPinDigitalOutput yellowLed =InitSemaphorePins.yellowLed;
     private static GpioPinDigitalOutput redLed = InitSemaphorePins.redLed;
 
-    public StopSemaphore() {
+    public static InitSemaphorePins initSemaphorePins = new InitSemaphorePins();
+
+    public StopSemaphore(GpioController externalGpio, GpioPinDigitalOutput green,  GpioPinDigitalOutput yellow,  GpioPinDigitalOutput red) {
+
+        gpio= externalGpio;
+        greenLed=green;
+        yellowLed= yellow;
+        redLed= red;
         //initPins();
     }
 

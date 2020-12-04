@@ -16,17 +16,20 @@ public class ErrorStateSemaphore implements Semaphore {
 
     private static final int TIMEOUT_ERROR_MS = 500;
 
-    private static final GpioController gpio = InitSemaphorePins.gpio;
+    private static GpioController gpio = InitSemaphorePins.gpio;
 
     private static GpioPinDigitalOutput yellowLed = InitSemaphorePins.yellowLed;
 
 
-    public ErrorStateSemaphore() {
+    public ErrorStateSemaphore(GpioController externalGpio, GpioPinDigitalOutput yellow) {
+
+        gpio= externalGpio;
+        yellowLed= yellow;
+
         //initPin();
     }
 
     private static void initPin() {
-
         yellowLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_YELLOW),
                 "Blinking yellow error state",PinState.LOW);
         yellowLed.setShutdownOptions(true, PinState.LOW);
