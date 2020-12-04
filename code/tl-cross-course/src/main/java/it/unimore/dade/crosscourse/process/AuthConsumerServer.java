@@ -120,7 +120,7 @@ public class AuthConsumerServer {
                     Thread errorStateSemaphore = new Thread(errorRunnable);
                     errorStateSemaphore.setName("error");
 
-                    InitSemaphorePins initSemaphorePins = new InitSemaphorePins();
+                    //InitSemaphorePins initSemaphorePins = new InitSemaphorePins();
 
                     logger.debug("Am i here ---------3---------");
 
