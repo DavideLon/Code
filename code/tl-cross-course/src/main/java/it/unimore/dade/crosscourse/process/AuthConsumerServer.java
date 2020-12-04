@@ -93,16 +93,23 @@ public class AuthConsumerServer {
                 logger.info("On topic : ({}) Message Received: ({})", topic, command);
 
                 //listener col command??
+                
+                logger.debug("Am i here ---------1---------");
 
-                Thread startSemaphore = new Thread(new StartSemaphore());
-                Thread stopSemaphore = new Thread(new StopSemaphore());
-                Thread errorStateSemaphore = new Thread(new ErrorStateSemaphore());
-
-                startSemaphore.start();
-                //SemaphoreStatusListener semaphoreStatusListener = new SemaphoreStatusListener() {
-                //    @Override
-                //    public void onStatusChanged(String command) throws InterruptedException {
+                SemaphoreStatusListener semaphoreStatusListener = new SemaphoreStatusListener() {
+                    @Override
+                    public void onStatusChanged(String command) throws InterruptedException {
                         //TODO insert switch case
+
+                        logger.debug("Am i here ---------2---------");
+                        
+                        Thread startSemaphore = new Thread(new StartSemaphore());
+                        Thread stopSemaphore = new Thread(new StopSemaphore());
+                        Thread errorStateSemaphore = new Thread(new ErrorStateSemaphore());
+
+
+                        logger.debug("Am i here ---------3---------");
+
                         if (command.toLowerCase().equals(ON)) {
                             logger.info("Telling to switch semaphore ON");
                             if (stopSemaphore.isAlive() && !stopSemaphore.isInterrupted())
@@ -130,9 +137,9 @@ public class AuthConsumerServer {
                             logger.debug("DEBUG ERROR");
                             errorStateSemaphore.start();
                         }
-                //    }
-                //};
-                //semaphoreStatusListener.onStatusChanged(command);
+                    }
+                };
+                semaphoreStatusListener.onStatusChanged(command);
 
             });
 
