@@ -104,6 +104,7 @@ public class AuthConsumerServer {
                                 stopSemaphore.interrupt();
                             if(errorStateSemaphore.isAlive() && !errorStateSemaphore.isInterrupted())
                                 errorStateSemaphore.interrupt();
+                            logger.debug("DEBUG ON");
                             startSemaphore.start();
                         }
                         else if(command.toLowerCase().equals("off")) {
@@ -112,6 +113,7 @@ public class AuthConsumerServer {
                                 startSemaphore.interrupt();
                             if(errorStateSemaphore.isAlive() && !errorStateSemaphore.isInterrupted())
                                 errorStateSemaphore.interrupt();
+                            logger.debug("DEBUG OFF");
                             stopSemaphore.start();
                         }
                         else {
@@ -120,6 +122,7 @@ public class AuthConsumerServer {
                                 startSemaphore.interrupt();
                             if(stopSemaphore.isAlive() && !stopSemaphore.isInterrupted())
                                 stopSemaphore.interrupt();
+                            logger.debug("DEBUG ERROR");
                             errorStateSemaphore.start();
                         }
                 //    }
