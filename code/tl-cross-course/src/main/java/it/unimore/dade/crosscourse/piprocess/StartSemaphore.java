@@ -1,22 +1,10 @@
 package it.unimore.dade.crosscourse.piprocess;
 
 import com.pi4j.io.gpio.*;
-import com.pi4j.wiringpi.Gpio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Semaphore;
-
 public class StartSemaphore implements Runnable {
-
-    protected SemaphoreStatusListener semaphoreStatusListener = new SemaphoreStatusListener() {
-        @Override
-        public void onStatusChanged(String updatedStatus) throws InterruptedException {
-            shutdown();
-        }
-    };
 
     public String msg= null;
 
@@ -45,18 +33,22 @@ public class StartSemaphore implements Runnable {
     private static GpioPinDigitalOutput greenLed = null;
     private static GpioPinDigitalOutput yellowLed = null;
     private static GpioPinDigitalOutput redLed = null;
-/*
 
-    private static final GpioController gpio = GpioFactory.getInstance();
-    private static GpioPinDigitalOutput greenLed = null;
-    private static GpioPinDigitalOutput yellowLed =null;
-    private static GpioPinDigitalOutput redLed = null;
-*/
     private final static Logger logger = LoggerFactory.getLogger(StartSemaphore.class);
 
     //private static ArrayList<Integer[]> stateMatrix = new ArrayList<Integer[]>();
 
-    public void shutdown(){
+/*
+    protected SemaphoreStatusListener semaphoreStatusListener = new SemaphoreStatusListener() {
+        @Override
+        public void onStatusChanged(String updatedStatus) throws InterruptedException {
+            shutdown();
+        }
+    };
+*/
+
+    //stops the infinite loop in the run() method
+        public void shutdown(){
         shutdown=!shutdown;
     }
 
@@ -66,6 +58,8 @@ public class StartSemaphore implements Runnable {
         greenLed=green;
         yellowLed= yellow;
         redLed= red;
+
+        //init done outside the StartSemaphore method, by the InitSemaphorePins
 
         /*if(!isInited())
             initPins();*/
@@ -79,6 +73,9 @@ public class StartSemaphore implements Runnable {
         this.msg= message;
     }
 /*
+
+    //tried to add a listener inside the TL part
+
     public void addDataListener(SemaphoreStatusListener semaphoreStatusListener) {
         if(this.semaphoreStatusListenerList!= null)
             this.semaphoreStatusListenerList.add(semaphoreStatusListener);
@@ -107,6 +104,13 @@ public class StartSemaphore implements Runnable {
             logger.error("Empty list or Null Status Listener! Nothing to notify");
     }
 */
+
+
+
+    //init pins used to init them from the inside, now they are inited from outside, by the InitedSemaphorePins
+
+
+/*
     public void initPins(){
         // provision gpio pins as output pins and make sure are set to LOW at startup
         greenLed = gpio.provisionDigitalOutputPin(RaspiPin.getPinByAddress(LED_GREEN),   // PIN NUMBER
@@ -123,6 +127,9 @@ public class StartSemaphore implements Runnable {
         redLed.setShutdownOptions(true, PinState.LOW);
         this.inited=true;
     }
+
+ */
+
 
     private static Integer startSemaphore() throws InterruptedException {
         switch (state){

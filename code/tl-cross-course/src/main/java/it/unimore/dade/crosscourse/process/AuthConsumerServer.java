@@ -102,9 +102,11 @@ public class AuthConsumerServer {
             Thread stopSemaphore = new Thread(stopRunnable);
             Thread errorStateSemaphore = new Thread(errorRunnable);
 
-            //status listener, does it really works?
+            //status listener
             SemaphoreStatusListener semaphoreStatusListener = command1 -> {
                 //TODO insert switch case
+
+                //trying to stop alive threads and start the right one, chosen by the incoming mqtt message
 
                 if (!startSemaphore.isAlive())
                     startSemaphore.setName("Start Thread");
